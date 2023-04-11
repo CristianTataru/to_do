@@ -146,7 +146,7 @@ class _AddEntryPageState extends State<AddEntryPage> {
                       color: Colors.white,
                     ),
                     style: TextButton.styleFrom(
-                      backgroundColor: Colors.orange,
+                      backgroundColor: dataAleasa == null ? Colors.grey : Colors.orange,
                     ),
                     onPressed: dataAleasa == null ? null : selectHourAndMinutes,
                     label: Text(
