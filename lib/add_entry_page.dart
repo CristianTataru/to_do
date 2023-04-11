@@ -84,9 +84,9 @@ class _AddEntryPageState extends State<AddEntryPage> {
               ),
               Row(
                 children: [
-                  const Text(
+                  Text(
                     "Select Date:",
-                    style: TextStyle(color: Colors.orange, fontSize: 30),
+                    style: TextStyle(color: Colors.orange[100], fontSize: 30),
                   ),
                   const SizedBox(
                     width: 30,
@@ -115,9 +115,9 @@ class _AddEntryPageState extends State<AddEntryPage> {
               ),
               Row(
                 children: [
-                  const Text(
+                  Text(
                     "Day:",
-                    style: TextStyle(color: Colors.orange, fontSize: 30),
+                    style: TextStyle(color: Colors.orange[100], fontSize: 30),
                   ),
                   const SizedBox(
                     width: 150,
@@ -133,9 +133,9 @@ class _AddEntryPageState extends State<AddEntryPage> {
               ),
               Row(
                 children: [
-                  const Text(
+                  Text(
                     "Select Hour:",
-                    style: TextStyle(color: Colors.orange, fontSize: 30),
+                    style: TextStyle(color: Colors.orange[100], fontSize: 30),
                   ),
                   const SizedBox(
                     width: 30,
@@ -162,22 +162,22 @@ class _AddEntryPageState extends State<AddEntryPage> {
               const SizedBox(
                 height: 30,
               ),
-              const TextField(
+              TextField(
                 minLines: 3,
                 maxLines: 3,
                 decoration: InputDecoration(
-                  label: Text(
+                  label: const Text(
                     "Text",
                     style: TextStyle(fontSize: 40, color: Colors.white),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.orange),
+                    borderSide: BorderSide(color: Colors.orange[100]!),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.orange),
+                    borderSide: BorderSide(color: Colors.orange[100]!),
                   ),
                 ),
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 25,
                 ),

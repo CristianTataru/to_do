@@ -27,84 +27,87 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
-        child: Center(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 50,
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 50,
+            ),
+            Text(
+              "To Do List",
+              style: TextStyle(
+                fontSize: 50,
+                fontWeight: FontWeight.bold,
+                color: Colors.orange[100],
               ),
-              Text(
-                "To Do List",
-                style: TextStyle(
-                  fontSize: 50,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.orange[100],
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Column(
-                children: listWithDate.map((e) => EntryWidget(e)).toList(),
-              ),
-              Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        top: BorderSide(color: Colors.orange[100]!),
-                        bottom: BorderSide(color: Colors.orange[100]!),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ...listWithDate.map((e) => EntryWidget(e)).toList(),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          top: BorderSide(color: Colors.orange[100]!),
+                          bottom: BorderSide(color: Colors.orange[100]!),
+                        ),
                       ),
-                    ),
-                    width: double.infinity,
-                    height: 80,
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Others",
-                            style: TextStyle(
-                              color: Colors.orange[100],
-                              fontSize: 35,
-                              fontWeight: FontWeight.bold,
+                      width: double.infinity,
+                      height: 80,
+                      child: GestureDetector(
+                        onTap: () {},
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Others",
+                              style: TextStyle(
+                                color: Colors.orange[100],
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          Text(
-                            " - ${listWithoutDate[0].name}",
-                            style: const TextStyle(color: Colors.white, fontSize: 25),
-                          )
-                        ],
+                            Text(
+                              " - ${listWithoutDate[0].name}",
+                              style: const TextStyle(color: Colors.white, fontSize: 25),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const AddEntryPage();
-                      },
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  fixedSize: const Size(150, 50),
+                    )
+                  ],
                 ),
-                child: const Text(
-                  "Add Entry",
-                  style: TextStyle(color: Colors.white, fontSize: 25),
-                ),
-              )
-            ],
-          ),
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const AddEntryPage();
+                    },
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+                fixedSize: const Size(150, 50),
+              ),
+              child: const Text(
+                "Add Entry",
+                style: TextStyle(color: Colors.white, fontSize: 25),
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+          ],
         ),
       ),
     );
@@ -128,7 +131,6 @@ class _EntryWidgetState extends State<EntryWidget> {
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(color: Colors.orange[100]!),
-          bottom: BorderSide(color: Colors.orange[100]!),
         ),
       ),
       width: double.infinity,
