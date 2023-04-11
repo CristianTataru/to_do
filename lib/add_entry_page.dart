@@ -42,6 +42,16 @@ class _AddEntryPageState extends State<AddEntryPage> {
     });
   }
 
+  void selectDate() async {
+    dataAleasa = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2025, 12, 31),
+    );
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -74,16 +84,7 @@ class _AddEntryPageState extends State<AddEntryPage> {
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.orange,
                     ),
-                    onPressed: () {
-                      DatePicker.showDatePicker(context,
-                          showTitleActions: true,
-                          minTime: DateTime.now(),
-                          maxTime: DateTime(2024, 1, 7), onChanged: (date) {
-                        setState(() {
-                          dataAleasa = date;
-                        });
-                      }, currentTime: DateTime.now(), locale: LocaleType.en);
-                    },
+                    onPressed: selectDate,
                     label: Text(
                       dataAleasa == null ? "Select Date" : dateFormatter.format(dataAleasa!),
                       style: const TextStyle(
