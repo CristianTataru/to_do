@@ -55,12 +55,13 @@ class _AddEntryPageState extends State<AddEntryPage> {
       lastDate: DateTime(2025, 12, 31),
       builder: (context, child) {
         return Theme(
-            data: Theme.of(context).copyWith(
-              colorScheme: const ColorScheme.light(
-                primary: Colors.orange,
-              ),
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.orange,
             ),
-            child: child!);
+          ),
+          child: child!,
+        );
       },
     );
     setState(() {});
