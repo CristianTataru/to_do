@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:to_do_list/add_entry_page.dart';
+import 'package:to_do_list/feature/add_entry/add_entry_page.dart';
 import 'package:to_do_list/model/entry.dart';
+import 'package:to_do_list/database/database.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,17 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<Entry> listWithDate = [
-    Entry("Haircut", DateTime.tryParse("2023-04-15 15:45"), true),
-    Entry('Buy Gift', DateTime.tryParse("2023-04-17"), false),
-    Entry("Change Tires", DateTime.tryParse("2023-05-15 15:45"), false),
-  ];
-  final List<Entry> listWithoutDate = [
-    Entry("Feed cat", null, false),
-    Entry('Clean house', null, false),
-    Entry("Fix sink", null, false),
-  ];
-
+  static final DateFormat dateFormatter = DateFormat('dd MMMM yyyy');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,36 +38,13 @@ class _HomePageState extends State<HomePage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    ...listWithDate.map((e) => EntryWidget(e)).toList(),
+                    ...database
+                        .getEntries()
+                        .map((e) => EntryWidget(e, e[0].date == null ? "Others" : dateFormatter.format(e[0].date!)))
+                        .toList(),
                     Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                          top: BorderSide(color: Colors.orange[100]!),
-                          bottom: BorderSide(color: Colors.orange[100]!),
-                        ),
-                      ),
-                      width: double.infinity,
-                      height: 80,
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Others",
-                              style: TextStyle(
-                                color: Colors.orange[100],
-                                fontSize: 35,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              " - ${listWithoutDate[0].name}",
-                              style: const TextStyle(color: Colors.white, fontSize: 25),
-                            )
-                          ],
-                        ),
-                      ),
+                      height: 1,
+                      color: Colors.orange[100],
                     )
                   ],
                 ),
@@ -86,14 +54,15 @@ class _HomePageState extends State<HomePage> {
               height: 30,
             ),
             ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
+              onPressed: () async {
+                await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {
                       return const AddEntryPage();
                     },
                   ),
                 );
+                setState(() {});
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,
@@ -115,33 +84,32 @@ class _HomePageState extends State<HomePage> {
 }
 
 class EntryWidget extends StatefulWidget {
-  final Entry entry;
-  const EntryWidget(this.entry, {super.key});
+  final List<Entry> entryList;
+  final String name;
+  const EntryWidget(this.entryList, this.name, {super.key});
 
   @override
   State<EntryWidget> createState() => _EntryWidgetState();
 }
 
 class _EntryWidgetState extends State<EntryWidget> {
-  static final DateFormat dateFormatter = DateFormat('dd MMMM yyyy');
   static final DateFormat timeFormatter = DateFormat('HH:mm');
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(color: Colors.orange[100]!),
         ),
       ),
-      width: double.infinity,
-      height: 80,
       child: GestureDetector(
         onTap: () {},
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              dateFormatter.format(widget.entry.date!),
+              widget.name,
               style: TextStyle(
                 color: Colors.orange[100],
                 fontSize: 35,
@@ -151,7 +119,7 @@ class _EntryWidgetState extends State<EntryWidget> {
             Row(
               children: [
                 Text(
-                  widget.entry.hasTime == false ? "" : timeFormatter.format(widget.entry.date!),
+                  widget.entryList[0].hasTime == false ? "" : timeFormatter.format(widget.entryList[0].date!),
                   style: const TextStyle(color: Colors.white, fontSize: 25),
                 ),
                 const Text(
@@ -159,7 +127,7 @@ class _EntryWidgetState extends State<EntryWidget> {
                   style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
                 Text(
-                  widget.entry.name,
+                  widget.entryList[0].name,
                   style: const TextStyle(color: Colors.white, fontSize: 25),
                 ),
               ],

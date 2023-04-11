@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:to_do_list/database/database.dart';
+import 'package:to_do_list/model/entry.dart';
 
 class AddEntryPage extends StatefulWidget {
   const AddEntryPage({super.key});
@@ -15,6 +17,20 @@ class _AddEntryPageState extends State<AddEntryPage> {
   TimeOfDay? oraAleasa;
   String formatted = "";
   String formatted2 = '';
+  TextEditingController textController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    textController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
+  }
 
   void selectHourAndMinutes() async {
     oraAleasa = await showTimePicker(
@@ -69,14 +85,14 @@ class _AddEntryPageState extends State<AddEntryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        appBar: AppBar(
-          title: const Text("Add Entry"),
-          backgroundColor: Colors.orange,
-        ),
-        body: Center(
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        title: const Text("Add Entry"),
+        backgroundColor: Colors.orange,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Column(
             children: [
               const SizedBox(
@@ -163,6 +179,7 @@ class _AddEntryPageState extends State<AddEntryPage> {
                 height: 30,
               ),
               TextField(
+                controller: textController,
                 minLines: 3,
                 maxLines: 3,
                 decoration: InputDecoration(
@@ -182,6 +199,35 @@ class _AddEntryPageState extends State<AddEntryPage> {
                   fontSize: 25,
                 ),
               ),
+              const SizedBox(
+                height: 250,
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  disabledBackgroundColor: Colors.grey,
+                  fixedSize: const Size(100, 50),
+                ),
+                onPressed: textController.text.isEmpty
+                    ? null
+                    : () {
+                        database.addEntry(
+                          Entry(
+                            textController.text,
+                            dataAleasa,
+                            oraAleasa != null,
+                          ),
+                        );
+                        Navigator.of(context).pop();
+                      },
+                child: const Text(
+                  "Done",
+                  style: TextStyle(fontSize: 25),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              )
             ],
           ),
         ),
