@@ -10,10 +10,37 @@ class AddEntryPage extends StatefulWidget {
 }
 
 class _AddEntryPageState extends State<AddEntryPage> {
+  static final DateFormat dateFormatter = DateFormat('dd.MM.yyyy');
+  static final DateFormat timeFormatter = DateFormat('HH:mm');
   DateTime? dataAleasa;
-  DateTime? oraAleasa;
+  TimeOfDay? oraAleasa;
   String formatted = "";
   String formatted2 = '';
+
+  void selectHourAndMinutes() async {
+    oraAleasa = await showTimePicker(
+      context: context,
+      initialTime: const TimeOfDay(hour: 10, minute: 47),
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child!,
+        );
+      },
+    );
+    setState(() {
+      if (oraAleasa == null) {
+        return;
+      }
+      dataAleasa = DateTime(
+        dataAleasa!.year,
+        dataAleasa!.month,
+        dataAleasa!.day,
+        oraAleasa!.hour,
+        oraAleasa!.minute,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,13 +81,11 @@ class _AddEntryPageState extends State<AddEntryPage> {
                           maxTime: DateTime(2024, 1, 7), onChanged: (date) {
                         setState(() {
                           dataAleasa = date;
-                          DateFormat formatter = DateFormat('dd.MM.yyyy');
-                          formatted = formatter.format(dataAleasa!);
                         });
                       }, currentTime: DateTime.now(), locale: LocaleType.en);
                     },
                     label: Text(
-                      dataAleasa == null ? "Select Date" : formatted,
+                      dataAleasa == null ? "Select Date" : dateFormatter.format(dataAleasa!),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 40,
@@ -107,17 +132,9 @@ class _AddEntryPageState extends State<AddEntryPage> {
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.orange,
                     ),
-                    onPressed: () {
-                      DatePicker.showTimePicker(context, showTitleActions: true, onChanged: (time) {
-                        setState(() {
-                          oraAleasa = time;
-                          DateFormat formatter2 = DateFormat('HH:mm:ss');
-                          formatted2 = formatter2.format(oraAleasa!);
-                        });
-                      }, currentTime: DateTime.now());
-                    },
+                    onPressed: dataAleasa == null ? null : selectHourAndMinutes,
                     label: Text(
-                      oraAleasa == null ? "Select Time" : formatted2,
+                      oraAleasa == null ? "Select Time" : timeFormatter.format(dataAleasa!),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 40,
