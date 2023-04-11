@@ -22,8 +22,10 @@ class _AddEntryPageState extends State<AddEntryPage> {
       context: context,
       initialTime: const TimeOfDay(hour: 10, minute: 47),
       builder: (BuildContext context, Widget? child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: const ColorScheme.light(primary: Colors.orange),
+          ),
           child: child!,
         );
       },
@@ -44,11 +46,17 @@ class _AddEntryPageState extends State<AddEntryPage> {
 
   void selectDate() async {
     dataAleasa = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2025, 12, 31),
-    );
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2025, 12, 31),
+        builder: (context, child) {
+          return Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: const ColorScheme.light(primary: Colors.orange),
+              ),
+              child: child!);
+        });
     setState(() {});
   }
 
