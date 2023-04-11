@@ -23,39 +23,46 @@ class _AddEntryPageState extends State<AddEntryPage> {
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            colorScheme: const ColorScheme.light(primary: Colors.orange),
+            colorScheme: const ColorScheme.light(
+              primary: Colors.orange,
+            ),
           ),
           child: child!,
         );
       },
     );
-    setState(() {
-      if (oraAleasa == null) {
-        return;
-      }
-      dataAleasa = DateTime(
-        dataAleasa!.year,
-        dataAleasa!.month,
-        dataAleasa!.day,
-        oraAleasa!.hour,
-        oraAleasa!.minute,
-      );
-    });
+    setState(
+      () {
+        if (oraAleasa == null) {
+          return;
+        }
+        dataAleasa = DateTime(
+          dataAleasa!.year,
+          dataAleasa!.month,
+          dataAleasa!.day,
+          oraAleasa!.hour,
+          oraAleasa!.minute,
+        );
+      },
+    );
   }
 
   void selectDate() async {
     dataAleasa = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2025, 12, 31),
-        builder: (context, child) {
-          return Theme(
-              data: Theme.of(context).copyWith(
-                colorScheme: const ColorScheme.light(primary: Colors.orange),
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2025, 12, 31),
+      builder: (context, child) {
+        return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: const ColorScheme.light(
+                primary: Colors.orange,
               ),
-              child: child!);
-        });
+            ),
+            child: child!);
+      },
+    );
     setState(() {});
   }
 
