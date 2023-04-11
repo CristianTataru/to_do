@@ -84,25 +84,33 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 30,
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const AddEntryPage();
-                      },
+              Expanded(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const AddEntryPage();
+                          },
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      fixedSize: const Size(150, 50),
                     ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  fixedSize: const Size(150, 50),
+                    child: const Text(
+                      "Add Entry",
+                      style: TextStyle(color: Colors.white, fontSize: 25),
+                    ),
+                  ),
                 ),
-                child: const Text(
-                  "Add Entry",
-                  style: TextStyle(color: Colors.white, fontSize: 25),
-                ),
-              )
+              ),
+              const SizedBox(
+                height: 30,
+              ),
             ],
           ),
         ),
@@ -128,7 +136,6 @@ class _EntryWidgetState extends State<EntryWidget> {
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(color: Colors.orange[100]!),
-          bottom: BorderSide(color: Colors.orange[100]!),
         ),
       ),
       width: double.infinity,
