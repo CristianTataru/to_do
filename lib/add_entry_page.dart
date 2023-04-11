@@ -116,7 +116,7 @@ class _AddEntryPageState extends State<AddEntryPage> {
               Row(
                 children: [
                   const Text(
-                    "Day",
+                    "Day:",
                     style: TextStyle(color: Colors.orange, fontSize: 30),
                   ),
                   const SizedBox(

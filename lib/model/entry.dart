@@ -1,9 +1,7 @@
 class Entry {
   String name;
-  DateTime? hour;
   DateTime? date;
+  bool hasTime;
 
-  Entry(this.name, this.date, this.hour);
-  Entry.noTime(this.name, this.date);
-  Entry.noDate(this.name);
+  Entry(this.name, this.date, this.hasTime);
 }
