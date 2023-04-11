@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 
 class AddEntryPage extends StatefulWidget {
@@ -22,24 +21,30 @@ class _AddEntryPageState extends State<AddEntryPage> {
       context: context,
       initialTime: const TimeOfDay(hour: 10, minute: 47),
       builder: (BuildContext context, Widget? child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.orange,
+            ),
+          ),
           child: child!,
         );
       },
     );
-    setState(() {
-      if (oraAleasa == null) {
-        return;
-      }
-      dataAleasa = DateTime(
-        dataAleasa!.year,
-        dataAleasa!.month,
-        dataAleasa!.day,
-        oraAleasa!.hour,
-        oraAleasa!.minute,
-      );
-    });
+    setState(
+      () {
+        if (oraAleasa == null) {
+          return;
+        }
+        dataAleasa = DateTime(
+          dataAleasa!.year,
+          dataAleasa!.month,
+          dataAleasa!.day,
+          oraAleasa!.hour,
+          oraAleasa!.minute,
+        );
+      },
+    );
   }
 
   void selectDate() async {
@@ -48,6 +53,16 @@ class _AddEntryPageState extends State<AddEntryPage> {
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2025, 12, 31),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.orange,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     setState(() {});
   }
