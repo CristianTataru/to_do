@@ -11,7 +11,7 @@ class AddEntryPage extends StatefulWidget {
 
 class _AddEntryPageState extends State<AddEntryPage> {
   DateTime? dataAleasa;
-  DateTime? oraAleasa;
+  TimeOfDay? oraAleasa;
   String formatted = "";
   String formatted2 = '';
 
@@ -107,15 +107,30 @@ class _AddEntryPageState extends State<AddEntryPage> {
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.orange,
                     ),
-                    onPressed: () {
-                      DatePicker.showTimePicker(context, showTitleActions: true, onChanged: (time) {
-                        setState(() {
-                          oraAleasa = time;
-                          DateFormat formatter2 = DateFormat('HH:mm:ss');
-                          formatted2 = formatter2.format(oraAleasa!);
-                        });
-                      }, currentTime: DateTime.now());
-                    },
+                    onPressed: dataAleasa == null
+                        ? null
+                        : () async {
+                            Future<TimeOfDay?> selectedTime24Hour = showTimePicker(
+                              context: context,
+                              initialTime: const TimeOfDay(hour: 10, minute: 47),
+                              builder: (BuildContext context, Widget? child) {
+                                return MediaQuery(
+                                  data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                                  child: child!,
+                                );
+                              },
+                            );
+                            oraAleasa = await selectedTime24Hour;
+                            setState(() {
+                              if (oraAleasa == null) {
+                                return;
+                              }
+                              dataAleasa = DateTime(dataAleasa!.year, dataAleasa!.month, dataAleasa!.day,
+                                  oraAleasa!.hour, oraAleasa!.minute);
+                              DateFormat formatter = DateFormat('HH:mm');
+                              formatted2 = formatter.format(dataAleasa!);
+                            });
+                          },
                     label: Text(
                       oraAleasa == null ? "Select Time" : formatted2,
                       style: const TextStyle(
