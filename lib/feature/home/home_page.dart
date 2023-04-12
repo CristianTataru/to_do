@@ -41,7 +41,9 @@ class _HomePageState extends State<HomePage> {
                     ...database
                         .getEntries()
                         .map(
-                          (e) => EntryWidget(e),
+                          (e) => EntryWidget(() {
+                            setState(() {});
+                          }, e),
                         )
                         .toList(),
                     Container(
@@ -86,8 +88,9 @@ class _HomePageState extends State<HomePage> {
 }
 
 class EntryWidget extends StatefulWidget {
+  final void Function() homeCallback;
   final List<Entry> entryList;
-  const EntryWidget(this.entryList, {super.key});
+  const EntryWidget(this.homeCallback, this.entryList, {super.key});
 
   @override
   State<EntryWidget> createState() => _EntryWidgetState();
@@ -104,7 +107,16 @@ class _EntryWidgetState extends State<EntryWidget> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
-              return DatePage(widget.entryList);
+              return DatePage(
+                widget.homeCallback,
+                widget.entryList.first.date == null
+                    ? null
+                    : DateTime(
+                        widget.entryList.first.date!.year,
+                        widget.entryList.first.date!.month,
+                        widget.entryList.first.date!.day,
+                      ),
+              );
             },
           ),
         );

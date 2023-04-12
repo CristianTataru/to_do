@@ -212,11 +212,7 @@ class _AddEntryPageState extends State<AddEntryPage> {
                     ? null
                     : () {
                         database.addEntry(
-                          Entry(
-                            textController.text,
-                            dataAleasa,
-                            oraAleasa != null,
-                          ),
+                          Entry(textController.text, dataAleasa, oraAleasa != null, false),
                         );
                         Navigator.of(context).pop();
                       },
