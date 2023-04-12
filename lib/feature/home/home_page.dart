@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_list/feature/add_entry/add_entry_page.dart';
+import 'package:to_do_list/feature/date_page/date_page.dart';
 import 'package:to_do_list/model/entry.dart';
 import 'package:to_do_list/database/database.dart';
 
@@ -12,7 +13,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  static final DateFormat dateFormatter = DateFormat('dd MMMM yyyy');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +40,9 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     ...database
                         .getEntries()
-                        .map((e) => EntryWidget(e, e[0].date == null ? "Others" : dateFormatter.format(e[0].date!)))
+                        .map(
+                          (e) => EntryWidget(e),
+                        )
                         .toList(),
                     Container(
                       height: 1,
@@ -85,8 +87,7 @@ class _HomePageState extends State<HomePage> {
 
 class EntryWidget extends StatefulWidget {
   final List<Entry> entryList;
-  final String name;
-  const EntryWidget(this.entryList, this.name, {super.key});
+  const EntryWidget(this.entryList, {super.key});
 
   @override
   State<EntryWidget> createState() => _EntryWidgetState();
@@ -94,22 +95,36 @@ class EntryWidget extends StatefulWidget {
 
 class _EntryWidgetState extends State<EntryWidget> {
   static final DateFormat timeFormatter = DateFormat('HH:mm');
+  static final DateFormat dateFormatter = DateFormat('dd MMMM yyyy');
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: Colors.orange[100]!),
+    return InkWell(
+      highlightColor: Colors.orange[100],
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return DatePage(widget.entryList);
+            },
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(color: Colors.orange[100]!),
+          ),
         ),
-      ),
-      child: GestureDetector(
-        onTap: () {},
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              widget.name,
+              widget.entryList[0].date == null
+                  ? "Others"
+                  : dateFormatter.format(
+                      widget.entryList[0].date!,
+                    ),
               style: TextStyle(
                 color: Colors.orange[100],
                 fontSize: 35,
@@ -119,7 +134,11 @@ class _EntryWidgetState extends State<EntryWidget> {
             Row(
               children: [
                 Text(
-                  widget.entryList[0].hasTime == false ? "" : timeFormatter.format(widget.entryList[0].date!),
+                  widget.entryList[0].hasTime == false
+                      ? ""
+                      : timeFormatter.format(
+                          widget.entryList[0].date!,
+                        ),
                   style: const TextStyle(color: Colors.white, fontSize: 25),
                 ),
                 const Text(
