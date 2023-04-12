@@ -45,22 +45,32 @@ class Database {
       return [];
     }
     List<Entry> listReturned = toDos[key]!;
-    listReturned.sort((a, b) {
-      if (a.isDone == b.isDone) {
-        if (a.hasTime == b.hasTime) {
-          if (a.date == null) {
-            return 1;
-          }
-          if (b.date == null) {
-            return -1;
-          }
-          return a.date!.compareTo(b.date!);
-        }
-        return b.hasTime ? 1 : -1;
-      }
-      return b.isDone ? -1 : 1;
-    });
+    listReturned.sort(compareTwoEntries);
     return listReturned;
+  }
+
+  //Sorteaza 2 entry in ordinea prioritatii:
+  //1.Pune taskurile "Not Done" inainte celor "Done".
+  //2.Pune taskurile cu ora inaintea celor fara ora.
+  //3.Pune taskurile cu ora mai devreme inaintea celor cu ora mai tarzie.
+  //4.Sorteaza taskurile in ordine alfabetica.
+  int compareTwoEntries(Entry a, Entry b) {
+    if (a.isDone == b.isDone) {
+      if (a.hasTime == b.hasTime) {
+        if (a.date == b.date) {
+          return a.name.compareTo(b.name);
+        }
+        if (a.date == null) {
+          return 1;
+        }
+        if (b.date == null) {
+          return -1;
+        }
+        return a.date!.compareTo(b.date!);
+      }
+      return b.hasTime ? 1 : -1;
+    }
+    return b.isDone ? -1 : 1;
   }
 
   List<List<Entry>> getEntries() {
@@ -77,21 +87,7 @@ class Database {
       },
     );
     for (int i = 0; i < myList.length; i++) {
-      myList[i].sort((a, b) {
-        if (a.isDone == b.isDone) {
-          if (a.hasTime == b.hasTime) {
-            if (a.date == null) {
-              return 1;
-            }
-            if (b.date == null) {
-              return -1;
-            }
-            return a.date!.compareTo(b.date!);
-          }
-          return b.hasTime ? 1 : -1;
-        }
-        return b.isDone ? -1 : 1;
-      });
+      myList[i].sort(compareTwoEntries);
     }
     return myList;
   }

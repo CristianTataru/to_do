@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_list/database/database.dart';
-import 'package:to_do_list/feature/home/home_page.dart';
 import 'package:to_do_list/model/entry.dart';
 
 class DatePage extends StatefulWidget {
@@ -55,7 +54,7 @@ class _DatePageState extends State<DatePage> {
                       color: Colors.orange[100],
                     ),
                     ...todayEntries.map(
-                      (e) => ShowEntry(() {
+                      (e) => ShowEntry(widget.entryKey, () {
                         widget.homeCallback();
                         setState(() {});
                       }, e),
@@ -72,9 +71,10 @@ class _DatePageState extends State<DatePage> {
 }
 
 class ShowEntry extends StatefulWidget {
+  final DateTime? entryKey;
   final void Function() callback;
   final Entry entry;
-  const ShowEntry(this.callback, this.entry, {super.key});
+  const ShowEntry(this.entryKey, this.callback, this.entry, {super.key});
 
   @override
   State<ShowEntry> createState() => _ShowEntryState();
@@ -82,6 +82,81 @@ class ShowEntry extends StatefulWidget {
 
 class _ShowEntryState extends State<ShowEntry> {
   static final DateFormat timeFormatter = DateFormat('HH:mm');
+
+  void onPopupButtonPressed(String value) {
+    if (value == "Done") {
+      onEntryDone();
+    } else if (value == "Undone") {
+      onEntryUndone();
+    } else if (value == "Delete") {
+      onEntryDelete();
+    }
+  }
+
+  void onEntryDone() => setState(() {
+        widget.entry.isDone = true;
+        widget.callback();
+      });
+
+  void onEntryUndone() => setState(() {
+        widget.entry.isDone = false;
+        widget.callback();
+      });
+
+  void onEntryDelete() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Delete entry"),
+          content: const Text(
+            "Are you sure you want to delete this entry?",
+            style: TextStyle(fontSize: 25),
+          ),
+          actions: [
+            TextButton(
+              onPressed: onEntryDeleteConfirmed,
+              child: const Text(
+                "Confirm",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                "Cancel",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                ),
+              ),
+            )
+          ],
+          backgroundColor: Colors.orange[100],
+        );
+      },
+    );
+  }
+
+  void onEntryDeleteConfirmed() {
+    if (database.toDos[widget.entryKey]!.length == 1) {
+      Navigator.of(context).pop();
+      database.toDos[widget.entryKey]!.remove(widget.entry);
+      widget.callback();
+    } else {
+      setState(() {
+        database.toDos[widget.entryKey]!.remove(widget.entry);
+        widget.callback();
+      });
+    }
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -115,103 +190,7 @@ class _ShowEntryState extends State<ShowEntry> {
               ),
               const Spacer(),
               PopupMenuButton(
-                onSelected: (value) {
-                  if (value == "Done") {
-                    setState(() {
-                      widget.entry.isDone = true;
-                      widget.callback();
-                    });
-                  } else if (value == "Undone") {
-                    setState(() {
-                      widget.entry.isDone = false;
-                      widget.callback();
-                    });
-                  } else if (value == "Delete") {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: const Text("Delete entry"),
-                            content: const Text(
-                              "Are you sure you want to delete this entry?",
-                              style: TextStyle(fontSize: 25),
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  if (widget.entry.date == null) {
-                                    if (database.toDos[null]!.length == 1) {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return const HomePage();
-                                          },
-                                        ),
-                                      );
-                                    } else {
-                                      setState(() {
-                                        database.toDos[null]!.remove(widget.entry);
-                                        widget.callback();
-                                      });
-                                    }
-                                  }
-                                  if (widget.entry.date != null) {
-                                    if (database
-                                            .toDos[DateTime(
-                                          widget.entry.date!.year,
-                                          widget.entry.date!.month,
-                                          widget.entry.date!.day,
-                                        )]!
-                                            .length ==
-                                        1) {
-                                      Navigator.of(context).pop();
-                                      database.toDos[DateTime(
-                                        widget.entry.date!.year,
-                                        widget.entry.date!.month,
-                                        widget.entry.date!.day,
-                                      )]!
-                                          .remove(widget.entry);
-                                      widget.callback();
-                                    } else {
-                                      setState(() {
-                                        database.toDos[DateTime(
-                                          widget.entry.date!.year,
-                                          widget.entry.date!.month,
-                                          widget.entry.date!.day,
-                                        )]!
-                                            .remove(widget.entry);
-                                        widget.callback();
-                                      });
-                                    }
-                                  }
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text(
-                                  "Confirm",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text(
-                                  "Cancel",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              )
-                            ],
-                            backgroundColor: Colors.orange[100],
-                          );
-                        });
-                  }
-                },
+                onSelected: onPopupButtonPressed,
                 itemBuilder: (context) {
                   return [
                     const PopupMenuItem(
