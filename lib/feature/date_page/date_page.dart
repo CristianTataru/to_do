@@ -3,9 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:to_do_list/model/entry.dart';
 
 class DatePage extends StatefulWidget {
-  final DateTime? date;
   final List<Entry> todayEntries;
-  const DatePage(this.date, this.todayEntries, {super.key});
+  const DatePage(this.todayEntries, {super.key});
 
   @override
   State<DatePage> createState() => _DatePageState();
@@ -13,14 +12,14 @@ class DatePage extends StatefulWidget {
 
 class _DatePageState extends State<DatePage> {
   static final DateFormat dateFormatter = DateFormat('dd MMMM yyyy');
-  String pageTitle = '';
+
   @override
   Widget build(BuildContext context) {
-    if (widget.date == null) {
-      pageTitle = "Others";
-    } else {
-      pageTitle = dateFormatter.format(widget.date!);
-    }
+    final pageTitle = widget.todayEntries[0].date == null
+        ? "Others"
+        : dateFormatter.format(
+            widget.todayEntries[0].date!,
+          );
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -46,7 +45,18 @@ class _DatePageState extends State<DatePage> {
             const SizedBox(
               height: 30,
             ),
-            ...widget.todayEntries.map((e) => ShowEntry(e))
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ...widget.todayEntries.map(
+                      (e) => ShowEntry(e),
+                    ),
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
