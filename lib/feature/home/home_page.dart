@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_list/feature/add_entry/add_entry_page.dart';
+import 'package:to_do_list/feature/date_page/date_page.dart';
 import 'package:to_do_list/model/entry.dart';
 import 'package:to_do_list/database/database.dart';
 
@@ -40,7 +41,16 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     ...database
                         .getEntries()
-                        .map((e) => EntryWidget(e, e[0].date == null ? "Others" : dateFormatter.format(e[0].date!)))
+                        .map(
+                          (e) => EntryWidget(
+                            e,
+                            e[0].date == null
+                                ? "Others"
+                                : dateFormatter.format(
+                                    e[0].date!,
+                                  ),
+                          ),
+                        )
                         .toList(),
                     Container(
                       height: 1,
@@ -104,9 +114,17 @@ class _EntryWidgetState extends State<EntryWidget> {
         ),
       ),
       child: GestureDetector(
-        onTap: () {},
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) {
+                return DatePage(widget.entryList[0].date, widget.entryList);
+              },
+            ),
+          );
+        },
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
               widget.name,
