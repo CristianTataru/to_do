@@ -162,10 +162,11 @@ class _ShowEntryState extends State<ShowEntry> {
 
   void onEntryEdit() async {
     await showDialog(
-        context: context,
-        builder: (context) {
-          return EditDialog(widget.entry);
-        });
+      context: context,
+      builder: (context) {
+        return EditDialog(widget.entry);
+      },
+    );
     widget.callback();
   }
 

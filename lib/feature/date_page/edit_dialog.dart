@@ -47,6 +47,29 @@ class _EditDialogState extends State<EditDialog> {
     setState(() {});
   }
 
+  void onDonePressed() {
+    setState(
+      () {
+        // ignore: prefer_conditional_assignment
+        if (oraAleasa == null) {
+          oraAleasa =
+              widget.entry.hasTime ? TimeOfDay(hour: widget.entry.date!.hour, minute: widget.entry.date!.minute) : null;
+        } else {
+          widget.entry.hasTime = true;
+          widget.entry.date = DateTime(
+            widget.entry.date!.year,
+            widget.entry.date!.month,
+            widget.entry.date!.day,
+            oraAleasa!.hour,
+            oraAleasa!.minute,
+          );
+        }
+        widget.entry.name = textController.text;
+      },
+    );
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -117,29 +140,7 @@ class _EditDialogState extends State<EditDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () {
-            setState(
-              () {
-                // ignore: prefer_conditional_assignment
-                if (oraAleasa == null) {
-                  oraAleasa = widget.entry.hasTime
-                      ? TimeOfDay(hour: widget.entry.date!.hour, minute: widget.entry.date!.minute)
-                      : null;
-                } else {
-                  widget.entry.hasTime = true;
-                  widget.entry.date = DateTime(
-                    widget.entry.date!.year,
-                    widget.entry.date!.month,
-                    widget.entry.date!.day,
-                    oraAleasa!.hour,
-                    oraAleasa!.minute,
-                  );
-                }
-                widget.entry.name = textController.text;
-              },
-            );
-            Navigator.of(context).pop();
-          },
+          onPressed: onDonePressed,
           child: const Text(
             "Done",
             style: TextStyle(color: Colors.black, fontSize: 20),
