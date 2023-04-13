@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:to_do_list/feature/add_entry/add_entry_page.dart';
-import 'package:to_do_list/feature/date_page/date_page.dart';
-import 'package:to_do_list/model/entry.dart';
-import 'package:to_do_list/database/database.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:to_do_list/feature/notes/notes_page.dart';
+import 'package:to_do_list/feature/to_do/to_do_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,157 +11,49 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int currentIndex = 0;
+  List<String> appBar = ["To Do", "Notes"];
+  final screens = [const ToDoPage(), const NotesPage()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 50,
-            ),
-            Text(
-              "To Do List",
-              style: TextStyle(
-                fontSize: 50,
-                fontWeight: FontWeight.bold,
-                color: Colors.orange[100],
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    ...database
-                        .getEntries()
-                        .map(
-                          (e) => EntryWidget(() {
-                            setState(() {});
-                          }, e),
-                        )
-                        .toList(),
-                    Container(
-                      height: 1,
-                      color: Colors.orange[100],
-                    )
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const AddEntryPage();
-                    },
-                  ),
-                );
-                setState(() {});
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                fixedSize: const Size(150, 50),
-              ),
-              child: const Text(
-                "Add Entry",
-                style: TextStyle(color: Colors.white, fontSize: 25),
-              ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-          ],
-        ),
+      appBar: AppBar(
+        backgroundColor: Colors.orange,
+        title: Text(appBar[currentIndex]),
       ),
-    );
-  }
-}
-
-class EntryWidget extends StatefulWidget {
-  final void Function() homeCallback;
-  final List<Entry> entryList;
-  const EntryWidget(this.homeCallback, this.entryList, {super.key});
-
-  @override
-  State<EntryWidget> createState() => _EntryWidgetState();
-}
-
-class _EntryWidgetState extends State<EntryWidget> {
-  static final DateFormat timeFormatter = DateFormat('HH:mm');
-  static final DateFormat dateFormatter = DateFormat('dd MMMM yyyy');
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      highlightColor: Colors.orange[100],
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) {
-              return DatePage(
-                widget.homeCallback,
-                widget.entryList.first.date == null
-                    ? null
-                    : DateTime(
-                        widget.entryList.first.date!.year,
-                        widget.entryList.first.date!.month,
-                        widget.entryList.first.date!.day,
-                      ),
-              );
-            },
-          ),
-        );
-      },
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Colors.orange[100]!),
-          ),
+      body: screens[currentIndex],
+      bottomNavigationBar: Container(
+        decoration: const ShapeDecoration(
+          color: Colors.orange,
+          shape: StadiumBorder(),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              widget.entryList[0].date == null
-                  ? "Others"
-                  : dateFormatter.format(
-                      widget.entryList[0].date!,
-                    ),
-              style: TextStyle(
-                color: Colors.orange[100],
-                fontSize: 35,
-                fontWeight: FontWeight.bold,
-              ),
+        height: 65,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+          child: GNav(
+            backgroundColor: Colors.orange,
+            color: Colors.white,
+            tabBackgroundColor: Colors.black26,
+            gap: 8,
+            padding: const EdgeInsets.all(12),
+            selectedIndex: currentIndex,
+            onTabChange: (index) => setState(
+              () {
+                currentIndex = index;
+              },
             ),
-            Row(
-              children: [
-                Text(
-                  widget.entryList[0].hasTime == false
-                      ? ""
-                      : timeFormatter.format(
-                          widget.entryList[0].date!,
-                        ),
-                  style: const TextStyle(color: Colors.white, fontSize: 25),
-                ),
-                const Text(
-                  " - ",
-                  style: TextStyle(color: Colors.white, fontSize: 25),
-                ),
-                Text(
-                  widget.entryList[0].name,
-                  style: const TextStyle(color: Colors.white, fontSize: 25),
-                ),
-              ],
-            )
-          ],
+            tabs: const [
+              GButton(
+                icon: Icons.checklist_rounded,
+                text: "To Do",
+              ),
+              GButton(
+                icon: Icons.create,
+                text: "Notes",
+              ),
+            ],
+          ),
         ),
       ),
     );
