@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_list/database/database.dart';
+import 'package:to_do_list/feature/date_page/edit_dialog.dart';
 import 'package:to_do_list/model/entry.dart';
 
 class DatePage extends StatefulWidget {
@@ -90,6 +91,8 @@ class _ShowEntryState extends State<ShowEntry> {
       onEntryUndone();
     } else if (value == "Delete") {
       onEntryDelete();
+    } else if (value == "Edit") {
+      onEntryEdit();
     }
   }
 
@@ -155,6 +158,16 @@ class _ShowEntryState extends State<ShowEntry> {
       });
     }
     Navigator.of(context).pop();
+  }
+
+  void onEntryEdit() async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return EditDialog(widget.entry);
+      },
+    );
+    widget.callback();
   }
 
   @override
