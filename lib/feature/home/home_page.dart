@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:to_do_list/feature/checklists/checklists_page.dart';
 import 'package:to_do_list/feature/notes/notes_page.dart';
-import 'package:to_do_list/feature/to_do/to_do_page.dart';
+import 'package:to_do_list/feature/planner/planner_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,8 +13,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currentIndex = 0;
-  List<String> appBar = ["To Do", "Notes"];
-  final screens = [const ToDoPage(), const NotesPage()];
+  PageController pageController = PageController(initialPage: 0);
+  List<String> appBar = ["Planner", "Checklist", "Notes"];
+  final screens = [const PlannerPage(), const ChecklistsPage(), const NotesPage()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +24,13 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.orange,
         title: Text(appBar[currentIndex]),
       ),
-      body: screens[currentIndex],
+      body: PageView(
+        controller: pageController,
+        onPageChanged: (value) => setState(() {
+          currentIndex = value;
+        }),
+        children: [screens[0], screens[1], screens[2]],
+      ),
       bottomNavigationBar: Container(
         decoration: const ShapeDecoration(
           color: Colors.orange,
@@ -40,13 +48,21 @@ class _HomePageState extends State<HomePage> {
             selectedIndex: currentIndex,
             onTabChange: (index) => setState(
               () {
-                currentIndex = index;
+                pageController.animateToPage(
+                  index,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.ease,
+                );
               },
             ),
             tabs: const [
               GButton(
+                icon: Icons.calendar_month_outlined,
+                text: "Planner",
+              ),
+              GButton(
                 icon: Icons.checklist_rounded,
-                text: "To Do",
+                text: "Checklists",
               ),
               GButton(
                 icon: Icons.create,

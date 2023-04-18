@@ -5,14 +5,14 @@ import '../../model/entry.dart';
 import '../add_entry/add_entry_page.dart';
 import '../date_page/date_page.dart';
 
-class ToDoPage extends StatefulWidget {
-  const ToDoPage({super.key});
+class PlannerPage extends StatefulWidget {
+  const PlannerPage({super.key});
 
   @override
-  State<ToDoPage> createState() => _ToDoPageState();
+  State<PlannerPage> createState() => _PlannerPageState();
 }
 
-class _ToDoPageState extends State<ToDoPage> {
+class _PlannerPageState extends State<PlannerPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -22,7 +22,7 @@ class _ToDoPageState extends State<ToDoPage> {
             height: 50,
           ),
           Text(
-            "To Do List",
+            "My Planner",
             style: TextStyle(
               fontSize: 50,
               fontWeight: FontWeight.bold,
@@ -72,7 +72,10 @@ class _ToDoPageState extends State<ToDoPage> {
             ),
             child: const Text(
               "Add Entry",
-              style: TextStyle(color: Colors.white, fontSize: 25),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 23,
+              ),
             ),
           ),
           const SizedBox(
@@ -128,17 +131,26 @@ class _EntryWidgetState extends State<EntryWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              widget.entryList[0].date == null
-                  ? "Others"
-                  : dateFormatter.format(
-                      widget.entryList[0].date!,
-                    ),
-              style: TextStyle(
-                color: Colors.orange[100],
-                fontSize: 35,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              children: [
+                Text(
+                  widget.entryList[0].date == null
+                      ? "Others"
+                      : dateFormatter.format(
+                          widget.entryList[0].date!,
+                        ),
+                  style: TextStyle(
+                    color: Colors.orange[100],
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  widget.entryList[0].date == null ? "" : DateFormat('EEEE').format(widget.entryList[0].date!),
+                  style: const TextStyle(color: Colors.orange, fontSize: 25),
+                )
+              ],
             ),
             Row(
               children: [

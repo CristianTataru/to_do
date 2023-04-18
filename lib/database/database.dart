@@ -1,29 +1,48 @@
+import 'package:to_do_list/model/checklist.dart';
 import 'package:to_do_list/model/entry.dart';
 
-Database database = Database(
-  {
-    DateTime.tryParse("2023-04-15"): [
-      Entry("Feed dog", DateTime.tryParse("2023-04-15"), false, false),
-      Entry("Do dishes", DateTime.tryParse("2023-04-15"), false, true),
-      Entry("Haircut", DateTime.tryParse("2023-04-15 15:45"), true, false),
-      Entry("Trim beard", DateTime.tryParse("2023-04-15 10:45"), true, false),
-      Entry("Wash Car", DateTime.tryParse("2023-04-15"), false, false),
+import '../model/note.dart';
+
+Database database = Database({
+  DateTime.tryParse("2023-04-15"): [
+    Entry("Feed dog", DateTime.tryParse("2023-04-15"), false, false),
+    Entry("Do dishes", DateTime.tryParse("2023-04-15"), false, true),
+    Entry("Haircut", DateTime.tryParse("2023-04-15 15:45"), true, false),
+    Entry("Trim beard", DateTime.tryParse("2023-04-15 10:45"), true, false),
+    Entry("Wash Car", DateTime.tryParse("2023-04-15"), false, false),
+  ],
+  DateTime.tryParse("2023-04-17"): [
+    Entry('Buy Gift', DateTime.tryParse("2023-04-17"), false, false),
+    Entry('Buy Meat', DateTime.tryParse("2023-04-17"), false, false),
+  ],
+  null: [
+    Entry("Feed cat", null, false, false),
+    Entry('Clean house', null, false, false),
+    Entry("Fix sink", null, false, false),
+  ],
+}, [
+  Note("Poezie", "Somnoroase pasarele, Pe la cuiburi se aduna"),
+], [
+  Checklist(
+    "Cumparaturi",
+    [
+      ChecklistEntry("Castraveti", true),
+      ChecklistEntry("Ardei", false),
+      ChecklistEntry("Muraturi", false),
+      ChecklistEntry("Banane", true),
     ],
-    DateTime.tryParse("2023-04-17"): [
-      Entry('Buy Gift', DateTime.tryParse("2023-04-17"), false, false),
-      Entry('Buy Meat', DateTime.tryParse("2023-04-17"), false, false),
-    ],
-    null: [
-      Entry("Feed cat", null, false, false),
-      Entry('Clean house', null, false, false),
-      Entry("Fix sink", null, false, false),
-    ],
-  },
-);
+  )
+]);
 
 class Database {
   Map<DateTime?, List<Entry>> toDos = {};
-  Database(this.toDos);
+  List<Note> notes;
+  List<Checklist> checklists;
+  Database(this.toDos, this.notes, this.checklists);
+
+  void addNote(Note note) {
+    notes.add(note);
+  }
 
   void addEntry(Entry entry) {
     DateTime? entryKey = entry.date == null
@@ -38,6 +57,17 @@ class Database {
     } else {
       toDos[entryKey]!.add(entry);
     }
+  }
+
+  List<ChecklistEntry> getChecklistData(Checklist a) {
+    List<ChecklistEntry> myList = a.content;
+    myList.sort((a, b) {
+      if (a.checked == b.checked) {
+        return a.name.compareTo(b.name);
+      }
+      return b.checked ? -1 : 1;
+    });
+    return myList;
   }
 
   List<Entry> getEntryList(DateTime? key) {

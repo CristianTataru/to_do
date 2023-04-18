@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_list/database/database.dart';
-import 'package:to_do_list/feature/create_note/create_note_page.dart';
-import 'package:to_do_list/single_note_page/single_note_page.dart';
+import 'package:to_do_list/feature/single_checklist_page/single_checklist_page.dart';
+import 'package:to_do_list/model/checklist.dart';
 
-import '../../model/note.dart';
-
-class NotesPage extends StatefulWidget {
-  const NotesPage({super.key});
+class ChecklistsPage extends StatefulWidget {
+  const ChecklistsPage({super.key});
 
   @override
-  State<NotesPage> createState() => _NotesPageState();
+  State<ChecklistsPage> createState() => _ChecklistsPageState();
 }
 
-class _NotesPageState extends State<NotesPage> {
+class _ChecklistsPageState extends State<ChecklistsPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -23,7 +21,7 @@ class _NotesPageState extends State<NotesPage> {
               height: 50,
             ),
             Text(
-              "My Notes",
+              "My Checklists",
               style: TextStyle(
                 color: Colors.orange[100]!,
                 fontSize: 50,
@@ -31,15 +29,15 @@ class _NotesPageState extends State<NotesPage> {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(
-              height: 20,
-            ),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    ...database.notes.map(
-                      (e) => NoteWidget(() {
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    ...database.checklists.map(
+                      (e) => ChecklistWidget(() {
                         setState(() {});
                       }, e),
                     ),
@@ -56,18 +54,9 @@ class _NotesPageState extends State<NotesPage> {
                 backgroundColor: Colors.orange,
                 fixedSize: const Size(150, 50),
               ),
-              onPressed: () async {
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const CreateNotePage();
-                    },
-                  ),
-                );
-                setState(() {});
-              },
+              onPressed: () {},
               child: const Text(
-                "Create Note",
+                "New Checklist",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 23,
@@ -84,28 +73,29 @@ class _NotesPageState extends State<NotesPage> {
   }
 }
 
-class NoteWidget extends StatefulWidget {
+class ChecklistWidget extends StatefulWidget {
   final void Function() homeCallback;
-  final Note note;
-  const NoteWidget(this.homeCallback, this.note, {super.key});
+  final Checklist checklist;
+  const ChecklistWidget(this.homeCallback, this.checklist, {super.key});
 
   @override
-  State<NoteWidget> createState() => _NoteWidgetState();
+  State<ChecklistWidget> createState() => _ChecklistWidgetState();
 }
 
-class _NoteWidgetState extends State<NoteWidget> {
+class _ChecklistWidgetState extends State<ChecklistWidget> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
       highlightColor: Colors.orange[100],
-      onTap: () {
-        Navigator.of(context).push(
+      onTap: () async {
+        await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
-              return SingleNotePage(widget.homeCallback, widget.note);
+              return SingleChecklistPage(widget.homeCallback, widget.checklist);
             },
           ),
         );
+        setState(() {});
       },
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -118,7 +108,7 @@ class _NoteWidgetState extends State<NoteWidget> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              widget.note.title,
+              widget.checklist.title,
               style: TextStyle(
                 color: Colors.orange[100]!,
                 fontSize: 35,
@@ -126,7 +116,7 @@ class _NoteWidgetState extends State<NoteWidget> {
               ),
             ),
             Text(
-              widget.note.content.length < 30 ? widget.note.content : "${widget.note.content.substring(0, 30)}...",
+              database.getChecklistData(widget.checklist).first.name,
               style: const TextStyle(color: Colors.white, fontSize: 25),
               maxLines: 1,
             )
