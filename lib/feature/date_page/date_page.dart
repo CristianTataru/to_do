@@ -150,7 +150,6 @@ class _ShowEntryState extends State<ShowEntry> {
   }
 
   void onEntryDeleteConfirmed() {
-    final stringKey = widget.entryKey == null ? "null" : widget.entryKey!.toIso8601String();
     if (databaseRepository.getEntryList(widget.entryKey).length == 1) {
       Navigator.of(context).pop();
       databaseRepository.deleteEntry(widget.entry);

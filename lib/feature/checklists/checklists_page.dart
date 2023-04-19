@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_list/domain/repository/aplicatie_repository.dart';
 import 'package:to_do_list/feature/single_checklist_page/single_checklist_page.dart';
 import 'package:to_do_list/main.dart';
 import 'package:to_do_list/model/checklist.dart';
@@ -262,7 +261,7 @@ class _ChecklistWidgetState extends State<ChecklistWidget> {
             ),
             Text(
               widget.checklist.content.isNotEmpty
-                  ? DatabaseRepository().getChecklistData(widget.checklist).first.name
+                  ? databaseRepository.getChecklistData(widget.checklist).first.name
                   : "No item",
               style: const TextStyle(
                 color: Colors.white,
