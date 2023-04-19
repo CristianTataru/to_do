@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_list/database/database.dart';
-import 'package:to_do_list/domain/repository/aplicatie_repository.dart';
+import 'package:to_do_list/main.dart';
 import '../../model/note.dart';
 
 class EditNotePage extends StatefulWidget {
@@ -116,8 +115,7 @@ class _EditNotePageState extends State<EditNotePage> {
                   setState(() {
                     widget.note.title = textController.text;
                     widget.note.content = textController2.text;
-                    DatabaseRepository databaseRepository = DatabaseRepository();
-                    databaseRepository.saveAppData(database);
+                    databaseRepository.saveAppData();
                     widget.callback();
                   });
                   Navigator.of(context).pop(widget.note);

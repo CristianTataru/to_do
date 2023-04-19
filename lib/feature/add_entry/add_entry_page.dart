@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:to_do_list/database/database.dart';
-import 'package:to_do_list/domain/repository/aplicatie_repository.dart';
+import 'package:to_do_list/main.dart';
 import 'package:to_do_list/model/entry.dart';
 
 class AddEntryPage extends StatefulWidget {
@@ -226,11 +225,9 @@ class _AddEntryPageState extends State<AddEntryPage> {
                 onPressed: textController.text.isEmpty
                     ? null
                     : () {
-                        database.addEntry(
+                        databaseRepository.addEntry(
                           Entry(textController.text, dataAleasa, oraAleasa != null, false),
                         );
-                        DatabaseRepository databaseRepository = DatabaseRepository();
-                        databaseRepository.saveAppData(database);
                         Navigator.of(context).pop();
                       },
                 child: const Text(

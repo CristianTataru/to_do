@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_list/domain/repository/aplicatie_repository.dart';
+import 'package:to_do_list/main.dart';
 import 'package:to_do_list/model/checklist.dart';
-import 'package:to_do_list/database/database.dart';
 
 class SingleChecklistPage extends StatefulWidget {
   final void Function() homeCallback;
@@ -30,7 +29,7 @@ class _SingleChecklistPageState extends State<SingleChecklistPage> {
 
   @override
   Widget build(BuildContext context) {
-    final tasks = database.getChecklistData(widget.checklist);
+    final tasks = databaseRepository.getChecklistData(widget.checklist);
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -119,8 +118,7 @@ class _SingleChecklistPageState extends State<SingleChecklistPage> {
                               widget.checklist.content.add(
                                 ChecklistEntry(textController.text, false),
                               );
-                              DatabaseRepository databaseRepository = DatabaseRepository();
-                              databaseRepository.saveAppData(database);
+                              databaseRepository.saveAppData();
                               textController = TextEditingController();
                               setState(() {});
                             },
@@ -197,8 +195,6 @@ class _ShowTaskState extends State<ShowTask> {
               onPressed: () {
                 Navigator.of(context).pop();
                 widget.checklist.content.remove(widget.entry);
-                DatabaseRepository databaseRepository = DatabaseRepository();
-                databaseRepository.saveAppData(database);
                 widget.callback();
               },
               child: const Text(
@@ -245,8 +241,7 @@ class _ShowTaskState extends State<ShowTask> {
                   setState(() {
                     // ignore: prefer_if_null_operators
                     widget.entry.checked = checkBoxValue == null ? false : checkBoxValue;
-                    DatabaseRepository databaseRepository = DatabaseRepository();
-                    databaseRepository.saveAppData(database);
+                    databaseRepository.saveAppData();
                     widget.callback();
                   });
                 },

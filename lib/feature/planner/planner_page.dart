@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../database/database.dart';
+import 'package:to_do_list/main.dart';
 import '../../model/entry.dart';
 import '../add_entry/add_entry_page.dart';
 import '../date_page/date_page.dart';
@@ -37,7 +37,7 @@ class _PlannerPageState extends State<PlannerPage> {
               physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
-                  ...database
+                  ...databaseRepository
                       .getEntries()
                       .map(
                         (e) => EntryWidget(() {

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:to_do_list/database/database.dart';
-import 'package:to_do_list/domain/repository/aplicatie_repository.dart';
 import 'package:to_do_list/feature/date_page/edit_dialog.dart';
+import 'package:to_do_list/main.dart';
 import 'package:to_do_list/model/entry.dart';
 
 class DatePage extends StatefulWidget {
@@ -19,7 +18,7 @@ class _DatePageState extends State<DatePage> {
 
   @override
   Widget build(BuildContext context) {
-    final todayEntries = database.getEntryList(widget.entryKey);
+    final todayEntries = databaseRepository.getEntryList(widget.entryKey);
     final pageTitle = widget.entryKey == null ? "Others" : dateFormatter.format(widget.entryKey!);
     return Scaffold(
       backgroundColor: Colors.black,
@@ -100,15 +99,13 @@ class _ShowEntryState extends State<ShowEntry> {
 
   void onEntryDone() => setState(() {
         widget.entry.isDone = true;
-        DatabaseRepository databaseRepository = DatabaseRepository();
-        databaseRepository.saveAppData(database);
+        databaseRepository.saveAppData();
         widget.callback();
       });
 
   void onEntryUndone() => setState(() {
         widget.entry.isDone = false;
-        DatabaseRepository databaseRepository = DatabaseRepository();
-        databaseRepository.saveAppData(database);
+        databaseRepository.saveAppData();
         widget.callback();
       });
 
@@ -154,17 +151,13 @@ class _ShowEntryState extends State<ShowEntry> {
 
   void onEntryDeleteConfirmed() {
     final stringKey = widget.entryKey == null ? "null" : widget.entryKey!.toIso8601String();
-    if (database.toDos[stringKey]!.length == 1) {
+    if (databaseRepository.getEntryList(widget.entryKey).length == 1) {
       Navigator.of(context).pop();
-      database.toDos[stringKey]!.remove(widget.entry);
-      DatabaseRepository databaseRepository = DatabaseRepository();
-      databaseRepository.saveAppData(database);
+      databaseRepository.deleteEntry(widget.entry);
       widget.callback();
     } else {
       setState(() {
-        database.toDos[stringKey]!.remove(widget.entry);
-        DatabaseRepository databaseRepository = DatabaseRepository();
-        databaseRepository.saveAppData(database);
+        databaseRepository.deleteEntry(widget.entry);
         widget.callback();
       });
     }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_list/database/database.dart';
 import 'package:to_do_list/feature/create_note/create_note_page.dart';
+import 'package:to_do_list/main.dart';
 import 'package:to_do_list/single_note_page/single_note_page.dart';
 
 import '../../model/note.dart';
@@ -39,11 +39,11 @@ class _NotesPageState extends State<NotesPage> {
                 physics: const BouncingScrollPhysics(),
                 child: Column(
                   children: [
-                    ...database.notes.map(
-                      (e) => NoteWidget(() {
-                        setState(() {});
-                      }, e),
-                    ),
+                    ...databaseRepository.getNotes().map(
+                          (e) => NoteWidget(() {
+                            setState(() {});
+                          }, e),
+                        ),
                     Container(
                       height: 1,
                       color: Colors.orange[100],
