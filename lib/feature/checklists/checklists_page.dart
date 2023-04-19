@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_list/database/database.dart';
+import 'package:to_do_list/domain/repository/aplicatie_repository.dart';
 import 'package:to_do_list/feature/single_checklist_page/single_checklist_page.dart';
 import 'package:to_do_list/model/checklist.dart';
 
@@ -114,6 +115,8 @@ class _ChecklistsPageState extends State<ChecklistsPage> {
                           onPressed: () {
                             Navigator.of(context).pop();
                             database.addChecklist(Checklist(textController.text, []));
+                            DatabaseRepository databaseRepository = DatabaseRepository();
+                            databaseRepository.saveAppData(database);
                             textController = TextEditingController();
                             setState(() {});
                           },
@@ -223,6 +226,8 @@ class _ChecklistWidgetState extends State<ChecklistWidget> {
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                     database.checklists.remove(widget.checklist);
+                                    DatabaseRepository databaseRepository = DatabaseRepository();
+                                    databaseRepository.saveAppData(database);
                                     widget.homeCallback();
                                   },
                                   child: const Text(

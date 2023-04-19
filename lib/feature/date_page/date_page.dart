@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_list/database/database.dart';
+import 'package:to_do_list/domain/repository/aplicatie_repository.dart';
 import 'package:to_do_list/feature/date_page/edit_dialog.dart';
 import 'package:to_do_list/model/entry.dart';
 
@@ -99,11 +100,15 @@ class _ShowEntryState extends State<ShowEntry> {
 
   void onEntryDone() => setState(() {
         widget.entry.isDone = true;
+        DatabaseRepository databaseRepository = DatabaseRepository();
+        databaseRepository.saveAppData(database);
         widget.callback();
       });
 
   void onEntryUndone() => setState(() {
         widget.entry.isDone = false;
+        DatabaseRepository databaseRepository = DatabaseRepository();
+        databaseRepository.saveAppData(database);
         widget.callback();
       });
 
@@ -148,13 +153,18 @@ class _ShowEntryState extends State<ShowEntry> {
   }
 
   void onEntryDeleteConfirmed() {
-    if (database.toDos[widget.entryKey]!.length == 1) {
+    final stringKey = widget.entryKey == null ? "null" : widget.entryKey!.toIso8601String();
+    if (database.toDos[stringKey]!.length == 1) {
       Navigator.of(context).pop();
-      database.toDos[widget.entryKey]!.remove(widget.entry);
+      database.toDos[stringKey]!.remove(widget.entry);
+      DatabaseRepository databaseRepository = DatabaseRepository();
+      databaseRepository.saveAppData(database);
       widget.callback();
     } else {
       setState(() {
-        database.toDos[widget.entryKey]!.remove(widget.entry);
+        database.toDos[stringKey]!.remove(widget.entry);
+        DatabaseRepository databaseRepository = DatabaseRepository();
+        databaseRepository.saveAppData(database);
         widget.callback();
       });
     }

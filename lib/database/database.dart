@@ -1,44 +1,29 @@
+import 'dart:convert';
+
 import 'package:to_do_list/model/checklist.dart';
 import 'package:to_do_list/model/entry.dart';
 
 import '../model/note.dart';
 
-Database database = Database({
-  DateTime.tryParse("2023-04-15"): [
-    Entry("Feed dog", DateTime.tryParse("2023-04-15"), false, false),
-    Entry("Do dishes", DateTime.tryParse("2023-04-15"), false, true),
-    Entry("Haircut", DateTime.tryParse("2023-04-15 15:45"), true, false),
-    Entry("Trim beard", DateTime.tryParse("2023-04-15 10:45"), true, false),
-    Entry("Wash Car", DateTime.tryParse("2023-04-15"), false, false),
-  ],
-  DateTime.tryParse("2023-04-17"): [
-    Entry('Buy Gift', DateTime.tryParse("2023-04-17"), false, false),
-    Entry('Buy Meat', DateTime.tryParse("2023-04-17"), false, false),
-  ],
-  null: [
-    Entry("Feed cat", null, false, false),
-    Entry('Clean house', null, false, false),
-    Entry("Fix sink", null, false, false),
-  ],
-}, [
-  Note("Poezie", "Somnoroase pasarele, Pe la cuiburi se aduna"),
-], [
-  Checklist(
-    "Cumparaturi",
-    [
-      ChecklistEntry("Castraveti", true),
-      ChecklistEntry("Ardei", false),
-      ChecklistEntry("Muraturi", false),
-      ChecklistEntry("Banane", true),
-    ],
-  )
-]);
+Database database = Database({}, [], []);
 
 class Database {
-  Map<DateTime?, List<Entry>> toDos = {};
+  Map<String, List<Entry>> toDos = {};
   List<Note> notes;
   List<Checklist> checklists;
   Database(this.toDos, this.notes, this.checklists);
+
+  Database.fromJson(Map<String, dynamic> json)
+      : toDos = (jsonDecode(json['toDos']) as Map)
+            .map((key, value) => MapEntry(key, (value as List).map((e) => Entry.fromJson(e)).toList())),
+        notes = (json['notes'] as List).map((e) => Note.fromJson(e)).toList(),
+        checklists = (json['checklists'] as List).map((e) => Checklist.fromJson(e)).toList();
+
+  Map<String, dynamic> toJson() => {
+        'toDos': jsonEncode(toDos),
+        'notes': notes,
+        'checklists': checklists,
+      };
 
   void addNote(Note note) {
     notes.add(note);
@@ -49,13 +34,13 @@ class Database {
   }
 
   void addEntry(Entry entry) {
-    DateTime? entryKey = entry.date == null
-        ? null
+    String entryKey = entry.date == null
+        ? "null"
         : DateTime(
             entry.date!.year,
             entry.date!.month,
             entry.date!.day,
-          );
+          ).toIso8601String();
     if (toDos[entryKey] == null) {
       toDos[entryKey] = <Entry>[entry];
     } else {
@@ -75,10 +60,11 @@ class Database {
   }
 
   List<Entry> getEntryList(DateTime? key) {
-    if (!toDos.containsKey(key)) {
+    final stringKey = key == null ? "null" : key.toIso8601String();
+    if (!toDos.containsKey(stringKey)) {
       return [];
     }
-    List<Entry> listReturned = toDos[key]!;
+    List<Entry> listReturned = toDos[stringKey]!;
     listReturned.sort(compareTwoEntries);
     return listReturned;
   }

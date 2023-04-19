@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:to_do_list/database/database.dart';
+import 'package:to_do_list/domain/repository/aplicatie_repository.dart';
 import 'package:to_do_list/model/entry.dart';
 
 class EditDialog extends StatefulWidget {
@@ -54,6 +56,8 @@ class _EditDialogState extends State<EditDialog> {
         if (oraAleasa == null) {
           oraAleasa =
               widget.entry.hasTime ? TimeOfDay(hour: widget.entry.date!.hour, minute: widget.entry.date!.minute) : null;
+          DatabaseRepository databaseRepository = DatabaseRepository();
+          databaseRepository.saveAppData(database);
         } else {
           widget.entry.hasTime = true;
           widget.entry.date = DateTime(
@@ -63,6 +67,8 @@ class _EditDialogState extends State<EditDialog> {
             oraAleasa!.hour,
             oraAleasa!.minute,
           );
+          DatabaseRepository databaseRepository = DatabaseRepository();
+          databaseRepository.saveAppData(database);
         }
         widget.entry.name = textController.text;
       },

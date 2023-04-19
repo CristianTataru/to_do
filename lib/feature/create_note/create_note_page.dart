@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:to_do_list/domain/repository/aplicatie_repository.dart';
 import 'package:to_do_list/model/note.dart';
 
 import '../../database/database.dart';
@@ -121,6 +122,8 @@ class _CreateNotePageState extends State<CreateNotePage> {
                         database.addNote(
                           Note(textController.text, textController2.text),
                         );
+                        DatabaseRepository databaseRepository = DatabaseRepository();
+                        databaseRepository.saveAppData(database);
                         Navigator.of(context).pop();
                       },
                 child: const Text(
