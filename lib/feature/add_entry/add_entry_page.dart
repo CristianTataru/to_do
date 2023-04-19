@@ -88,7 +88,7 @@ class _AddEntryPageState extends State<AddEntryPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text("Add Entry"),
+        title: const Text("Add entry"),
         backgroundColor: Colors.orange,
       ),
       body: SafeArea(
@@ -127,7 +127,20 @@ class _AddEntryPageState extends State<AddEntryPage> {
                 ],
               ),
               const SizedBox(
-                height: 30,
+                height: 15,
+              ),
+              Visibility(
+                visible: dataAleasa == null ? true : false,
+                child: const Text(
+                  'If no date is selected the entry will automatically go in "Others".',
+                  style: TextStyle(
+                    color: Colors.orange,
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 25,
               ),
               Row(
                 children: [
@@ -200,7 +213,7 @@ class _AddEntryPageState extends State<AddEntryPage> {
                 ),
               ),
               const SizedBox(
-                height: 250,
+                height: 235,
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
