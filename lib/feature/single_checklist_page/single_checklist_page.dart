@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:to_do_list/main.dart';
 import 'package:to_do_list/model/checklist.dart';
-import 'package:to_do_list/database/database.dart';
 
 class SingleChecklistPage extends StatefulWidget {
   final void Function() homeCallback;
@@ -29,7 +29,7 @@ class _SingleChecklistPageState extends State<SingleChecklistPage> {
 
   @override
   Widget build(BuildContext context) {
-    final tasks = database.getChecklistData(widget.checklist);
+    final tasks = databaseRepository.getChecklistData(widget.checklist);
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -118,6 +118,7 @@ class _SingleChecklistPageState extends State<SingleChecklistPage> {
                               widget.checklist.content.add(
                                 ChecklistEntry(textController.text, false),
                               );
+                              databaseRepository.saveAppData();
                               textController = TextEditingController();
                               setState(() {});
                             },
@@ -240,6 +241,7 @@ class _ShowTaskState extends State<ShowTask> {
                   setState(() {
                     // ignore: prefer_if_null_operators
                     widget.entry.checked = checkBoxValue == null ? false : checkBoxValue;
+                    databaseRepository.saveAppData();
                     widget.callback();
                   });
                 },

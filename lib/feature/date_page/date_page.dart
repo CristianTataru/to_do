@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:to_do_list/database/database.dart';
 import 'package:to_do_list/feature/date_page/edit_dialog.dart';
+import 'package:to_do_list/main.dart';
 import 'package:to_do_list/model/entry.dart';
 
 class DatePage extends StatefulWidget {
@@ -18,7 +18,7 @@ class _DatePageState extends State<DatePage> {
 
   @override
   Widget build(BuildContext context) {
-    final todayEntries = database.getEntryList(widget.entryKey);
+    final todayEntries = databaseRepository.getEntryList(widget.entryKey);
     final pageTitle = widget.entryKey == null ? "Others" : dateFormatter.format(widget.entryKey!);
     return Scaffold(
       backgroundColor: Colors.black,
@@ -99,11 +99,13 @@ class _ShowEntryState extends State<ShowEntry> {
 
   void onEntryDone() => setState(() {
         widget.entry.isDone = true;
+        databaseRepository.saveAppData();
         widget.callback();
       });
 
   void onEntryUndone() => setState(() {
         widget.entry.isDone = false;
+        databaseRepository.saveAppData();
         widget.callback();
       });
 
@@ -148,13 +150,13 @@ class _ShowEntryState extends State<ShowEntry> {
   }
 
   void onEntryDeleteConfirmed() {
-    if (database.toDos[widget.entryKey]!.length == 1) {
+    if (databaseRepository.getEntryList(widget.entryKey).length == 1) {
       Navigator.of(context).pop();
-      database.toDos[widget.entryKey]!.remove(widget.entry);
+      databaseRepository.deleteEntry(widget.entry);
       widget.callback();
     } else {
       setState(() {
-        database.toDos[widget.entryKey]!.remove(widget.entry);
+        databaseRepository.deleteEntry(widget.entry);
         widget.callback();
       });
     }

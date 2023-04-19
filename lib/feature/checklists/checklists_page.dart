@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_list/database/database.dart';
 import 'package:to_do_list/feature/single_checklist_page/single_checklist_page.dart';
+import 'package:to_do_list/main.dart';
 import 'package:to_do_list/model/checklist.dart';
 
 class ChecklistsPage extends StatefulWidget {
@@ -52,11 +52,11 @@ class _ChecklistsPageState extends State<ChecklistsPage> {
                     const SizedBox(
                       height: 20,
                     ),
-                    ...database.checklists.map(
-                      (e) => ChecklistWidget(() {
-                        setState(() {});
-                      }, e),
-                    ),
+                    ...databaseRepository.getChecklists().map(
+                          (e) => ChecklistWidget(() {
+                            setState(() {});
+                          }, e),
+                        ),
                     Container(
                       height: 1,
                       color: Colors.orange[100],
@@ -113,7 +113,7 @@ class _ChecklistsPageState extends State<ChecklistsPage> {
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop();
-                            database.addChecklist(Checklist(textController.text, []));
+                            databaseRepository.addChecklist(Checklist(textController.text, []));
                             textController = TextEditingController();
                             setState(() {});
                           },
@@ -222,7 +222,7 @@ class _ChecklistWidgetState extends State<ChecklistWidget> {
                                 TextButton(
                                   onPressed: () {
                                     Navigator.of(context).pop();
-                                    database.checklists.remove(widget.checklist);
+                                    databaseRepository.deleteChecklist(widget.checklist);
                                     widget.homeCallback();
                                   },
                                   child: const Text(
@@ -260,7 +260,9 @@ class _ChecklistWidgetState extends State<ChecklistWidget> {
               ],
             ),
             Text(
-              widget.checklist.content.isNotEmpty ? database.getChecklistData(widget.checklist).first.name : "No item",
+              widget.checklist.content.isNotEmpty
+                  ? databaseRepository.getChecklistData(widget.checklist).first.name
+                  : "No item",
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 25,

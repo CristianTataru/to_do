@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:to_do_list/main.dart';
 import 'package:to_do_list/model/note.dart';
-
-import '../../database/database.dart';
 
 class CreateNotePage extends StatefulWidget {
   const CreateNotePage({super.key});
@@ -118,7 +117,7 @@ class _CreateNotePageState extends State<CreateNotePage> {
                 onPressed: textController.text.isEmpty
                     ? null
                     : () {
-                        database.addNote(
+                        databaseRepository.addNote(
                           Note(textController.text, textController2.text),
                         );
                         Navigator.of(context).pop();

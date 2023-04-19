@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_list/database/database.dart';
+
 import 'package:to_do_list/feature/edit_note/edit_note.dart';
+import 'package:to_do_list/main.dart';
 
 import '../model/note.dart';
 
@@ -29,7 +30,7 @@ class _SingleNotePageState extends State<SingleNotePage> {
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
-                database.notes.remove(widget.note);
+                databaseRepository.deleteNote(widget.note);
                 widget.homeCallback();
               },
               child: const Text(
