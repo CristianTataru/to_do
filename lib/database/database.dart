@@ -44,6 +44,10 @@ class Database {
     notes.add(note);
   }
 
+  void addChecklist(Checklist checklist) {
+    checklists.add(checklist);
+  }
+
   void addEntry(Entry entry) {
     DateTime? entryKey = entry.date == null
         ? null

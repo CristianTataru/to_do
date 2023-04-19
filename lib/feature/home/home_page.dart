@@ -24,12 +24,19 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.orange,
         title: Text(appBar[currentIndex]),
       ),
-      body: PageView(
-        controller: pageController,
-        onPageChanged: (value) => setState(() {
-          currentIndex = value;
-        }),
-        children: [screens[0], screens[1], screens[2]],
+      body: Theme(
+        data: ThemeData(
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            secondary: Colors.orange[100],
+          ),
+        ),
+        child: PageView(
+          controller: pageController,
+          onPageChanged: (value) => setState(() {
+            currentIndex = value;
+          }),
+          children: [screens[0], screens[1], screens[2]],
+        ),
       ),
       bottomNavigationBar: Container(
         decoration: const ShapeDecoration(
