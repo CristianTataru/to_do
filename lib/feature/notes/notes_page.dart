@@ -36,6 +36,7 @@ class _NotesPageState extends State<NotesPage> {
             ),
             Expanded(
               child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
                 child: Column(
                   children: [
                     ...database.notes.map(

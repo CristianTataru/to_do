@@ -41,6 +41,7 @@ class _CreateNotePageState extends State<CreateNotePage> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
               const SizedBox(

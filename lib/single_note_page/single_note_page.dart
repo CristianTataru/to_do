@@ -88,6 +88,7 @@ class _SingleNotePageState extends State<SingleNotePage> {
             ),
             Expanded(
               child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

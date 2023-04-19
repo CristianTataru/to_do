@@ -47,6 +47,7 @@ class _DatePageState extends State<DatePage> {
             ),
             Expanded(
               child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [

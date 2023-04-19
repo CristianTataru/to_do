@@ -34,6 +34,7 @@ class _PlannerPageState extends State<PlannerPage> {
           ),
           Expanded(
             child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
                   ...database

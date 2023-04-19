@@ -12,6 +12,21 @@ class SingleChecklistPage extends StatefulWidget {
 }
 
 class _SingleChecklistPageState extends State<SingleChecklistPage> {
+  TextEditingController textController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    textController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final tasks = database.getChecklistData(widget.checklist);
@@ -42,6 +57,7 @@ class _SingleChecklistPageState extends State<SingleChecklistPage> {
             ),
             Expanded(
               child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -49,12 +65,95 @@ class _SingleChecklistPageState extends State<SingleChecklistPage> {
                       (e) => ShowTask(e, () {
                         widget.homeCallback();
                         setState(() {});
-                      }),
+                      }, widget.checklist),
                     )
                   ],
                 ),
               ),
             ),
+            IconButton(
+              onPressed: () async {
+                await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        backgroundColor: Colors.orange[100],
+                        title: const Text(
+                          "Add Item",
+                          style: TextStyle(fontSize: 25),
+                        ),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            TextField(
+                              controller: textController,
+                              minLines: 1,
+                              maxLines: 1,
+                              decoration: const InputDecoration(
+                                label: Text(
+                                  "Item",
+                                  style: TextStyle(fontSize: 40, color: Colors.black),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                              ),
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 25,
+                              ),
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              widget.checklist.content.add(
+                                ChecklistEntry(textController.text, false),
+                              );
+                              textController = TextEditingController();
+                              setState(() {});
+                            },
+                            child: const Text(
+                              "Add",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              "Cancel",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    });
+              },
+              icon: const Icon(
+                Icons.add_box,
+                color: Colors.orange,
+                size: 45,
+              ),
+            ),
+            const SizedBox(
+              height: 50,
+            )
           ],
         ),
       ),
@@ -65,7 +164,8 @@ class _SingleChecklistPageState extends State<SingleChecklistPage> {
 class ShowTask extends StatefulWidget {
   final ChecklistEntry entry;
   final void Function() callback;
-  const ShowTask(this.entry, this.callback, {super.key});
+  final Checklist checklist;
+  const ShowTask(this.entry, this.callback, this.checklist, {super.key});
 
   @override
   State<ShowTask> createState() => _ShowTaskState();
@@ -77,6 +177,51 @@ class _ShowTaskState extends State<ShowTask> {
       widget.entry.checked = widget.entry.checked == false ? true : false;
       widget.callback();
     });
+  }
+
+  void deleteItem() async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Delete item"),
+          content: const Text(
+            "Are you sure you want to delete this item?",
+            style: TextStyle(fontSize: 25),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                widget.checklist.content.remove(widget.entry);
+                widget.callback();
+              },
+              child: const Text(
+                "Confirm",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                "Cancel",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                ),
+              ),
+            )
+          ],
+          backgroundColor: Colors.orange[100],
+        );
+      },
+    );
+    setState(() {});
   }
 
   @override
@@ -114,7 +259,7 @@ class _ShowTaskState extends State<ShowTask> {
               ),
               const Spacer(),
               IconButton(
-                  onPressed: () {},
+                  onPressed: deleteItem,
                   icon: const Icon(
                     Icons.delete,
                     color: Colors.orange,
