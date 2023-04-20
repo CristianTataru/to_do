@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:to_do_list/feature/date_page/edit_dialog.dart';
 import 'package:to_do_list/main.dart';
 import 'package:to_do_list/model/entry.dart';
+import 'package:to_do_list/model/priority.dart';
 
 class DatePage extends StatefulWidget {
   final void Function() homeCallback;
@@ -175,11 +176,11 @@ class _ShowEntryState extends State<ShowEntry> {
 
   Color getTextColor() {
     Color color = Colors.white;
-    if (widget.entry.priority == "Low") {
+    if (widget.entry.priority == EntryPriority.low) {
       color = Colors.green;
-    } else if (widget.entry.priority == "Medium") {
+    } else if (widget.entry.priority == EntryPriority.medium) {
       color = Colors.yellow;
-    } else if (widget.entry.priority == "High") {
+    } else if (widget.entry.priority == EntryPriority.high) {
       color = Colors.red;
     }
     return color;
@@ -218,7 +219,7 @@ class _ShowEntryState extends State<ShowEntry> {
               ),
               const Spacer(),
               Text(
-                widget.entry.priority,
+                widget.entry.priority.toString(),
                 style: TextStyle(
                   color: getTextColor(),
                   fontSize: 20,

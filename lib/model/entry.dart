@@ -1,9 +1,11 @@
+import 'package:to_do_list/model/priority.dart';
+
 class Entry {
   String name;
   DateTime? date;
   bool hasTime;
   bool isDone;
-  String priority;
+  EntryPriority priority;
 
   Entry(this.name, this.date, this.hasTime, this.isDone, this.priority);
 
@@ -12,13 +14,13 @@ class Entry {
         date = json['date'] == "null" ? null : DateTime.parse(json['date']),
         hasTime = json['hasTime'],
         isDone = json['isDone'],
-        priority = json['priority'];
+        priority = EntryPriority.fromJson(json['priority']);
 
   Map<String, dynamic> toJson() => {
         'name': name,
         'date': date.toString(),
         "hasTime": hasTime,
         'isDone': isDone,
-        'priority': priority,
+        'priority': priority.toJson(),
       };
 }

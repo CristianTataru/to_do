@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_list/main.dart';
 import 'package:to_do_list/model/entry.dart';
+import 'package:to_do_list/model/priority.dart';
 
 class AddEntryPage extends StatefulWidget {
   const AddEntryPage({super.key});
@@ -18,7 +19,7 @@ class _AddEntryPageState extends State<AddEntryPage> {
   String formatted = "";
   String formatted2 = '';
   TextEditingController textController = TextEditingController();
-  String priority = "Low";
+  EntryPriority priority = EntryPriority.low;
   bool? isCheckedHigh = false;
   bool? isCheckedMedium = false;
   bool? isCheckedLow = true;
@@ -69,11 +70,11 @@ class _AddEntryPageState extends State<AddEntryPage> {
 
   Color getTextColor() {
     Color color = Colors.white;
-    if (priority == "Low") {
+    if (priority == EntryPriority.low) {
       color = Colors.green;
-    } else if (priority == "Medium") {
+    } else if (priority == EntryPriority.medium) {
       color = Colors.yellow;
-    } else if (priority == "High") {
+    } else if (priority == EntryPriority.high) {
       color = Colors.red;
     }
     return color;
@@ -236,16 +237,18 @@ class _AddEntryPageState extends State<AddEntryPage> {
                       },
                     ),
                     value: isCheckedHigh,
-                    onChanged: (value) {
-                      setState(
-                        () {
-                          priority = "High";
-                          isCheckedHigh = value;
-                          isCheckedMedium = false;
-                          isCheckedLow = false;
-                        },
-                      );
-                    },
+                    onChanged: isCheckedHigh == true
+                        ? null
+                        : (value) {
+                            setState(
+                              () {
+                                priority = EntryPriority.high;
+                                isCheckedHigh = value;
+                                isCheckedMedium = false;
+                                isCheckedLow = false;
+                              },
+                            );
+                          },
                   ),
                   Checkbox(
                     fillColor: MaterialStateProperty.resolveWith<Color>(
@@ -254,16 +257,18 @@ class _AddEntryPageState extends State<AddEntryPage> {
                       },
                     ),
                     value: isCheckedMedium,
-                    onChanged: (value) {
-                      setState(
-                        () {
-                          priority = "Medium";
-                          isCheckedMedium = value;
-                          isCheckedHigh = false;
-                          isCheckedLow = false;
-                        },
-                      );
-                    },
+                    onChanged: isCheckedMedium == true
+                        ? null
+                        : (value) {
+                            setState(
+                              () {
+                                priority = EntryPriority.medium;
+                                isCheckedMedium = value;
+                                isCheckedHigh = false;
+                                isCheckedLow = false;
+                              },
+                            );
+                          },
                   ),
                   Checkbox(
                     fillColor: MaterialStateProperty.resolveWith<Color>(
@@ -272,22 +277,24 @@ class _AddEntryPageState extends State<AddEntryPage> {
                       },
                     ),
                     value: isCheckedLow,
-                    onChanged: (value) {
-                      setState(
-                        () {
-                          priority = "Low";
-                          isCheckedLow = value;
-                          isCheckedHigh = false;
-                          isCheckedMedium = false;
-                        },
-                      );
-                    },
+                    onChanged: isCheckedLow == true
+                        ? null
+                        : (value) {
+                            setState(
+                              () {
+                                priority = EntryPriority.low;
+                                isCheckedLow = value;
+                                isCheckedHigh = false;
+                                isCheckedMedium = false;
+                              },
+                            );
+                          },
                   ),
                   const SizedBox(
                     width: 25,
                   ),
                   Text(
-                    priority,
+                    priority.toString(),
                     style: TextStyle(color: getTextColor(), fontSize: 25),
                   )
                 ],
