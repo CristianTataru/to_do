@@ -173,6 +173,18 @@ class _ShowEntryState extends State<ShowEntry> {
     widget.callback();
   }
 
+  Color getTextColor() {
+    Color color = Colors.white;
+    if (widget.entry.priority == "Low") {
+      color = Colors.green;
+    } else if (widget.entry.priority == "Medium") {
+      color = Colors.yellow;
+    } else if (widget.entry.priority == "High") {
+      color = Colors.red;
+    }
+    return color;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -205,6 +217,13 @@ class _ShowEntryState extends State<ShowEntry> {
                 textAlign: TextAlign.left,
               ),
               const Spacer(),
+              Text(
+                widget.entry.priority,
+                style: TextStyle(
+                  color: getTextColor(),
+                  fontSize: 20,
+                ),
+              ),
               PopupMenuButton(
                 onSelected: onPopupButtonPressed,
                 itemBuilder: (context) {

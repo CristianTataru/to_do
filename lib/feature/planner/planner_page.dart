@@ -18,8 +18,28 @@ class _PlannerPageState extends State<PlannerPage> {
     return SafeArea(
       child: Column(
         children: [
-          const SizedBox(
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.orange[100],
+              border: Border.all(
+                color: Colors.orange,
+                width: 3,
+              ),
+            ),
             height: 50,
+            child: Row(
+              children: const [
+                Text(
+                  "Filter by priority:",
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
           ),
           Text(
             "My Planner",
@@ -100,6 +120,39 @@ class EntryWidget extends StatefulWidget {
 class _EntryWidgetState extends State<EntryWidget> {
   static final DateFormat timeFormatter = DateFormat('HH:mm');
   static final DateFormat dateFormatter = DateFormat('dd MMMM yyyy');
+  bool hasLow() {
+    bool x = false;
+    for (int i = 0; i < widget.entryList.length; i++) {
+      if (widget.entryList[i].priority == "Low") {
+        x = true;
+        break;
+      }
+    }
+    return x;
+  }
+
+  bool hasMedium() {
+    bool x = false;
+    for (int i = 0; i < widget.entryList.length; i++) {
+      if (widget.entryList[i].priority == "Medium") {
+        x = true;
+        break;
+      }
+    }
+    return x;
+  }
+
+  bool hasHigh() {
+    bool x = false;
+    for (int i = 0; i < widget.entryList.length; i++) {
+      if (widget.entryList[i].priority == "High") {
+        x = true;
+        break;
+      }
+    }
+    return x;
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -170,6 +223,37 @@ class _EntryWidgetState extends State<EntryWidget> {
                 Text(
                   widget.entryList[0].name,
                   style: const TextStyle(color: Colors.white, fontSize: 25),
+                ),
+                const Spacer(),
+                Visibility(
+                  visible: hasLow(),
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.green,
+                    radius: 7,
+                  ),
+                ),
+                SizedBox(
+                  width: hasLow() == true ? 20 : 40,
+                ),
+                Visibility(
+                  visible: hasMedium(),
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.yellow,
+                    radius: 7,
+                  ),
+                ),
+                SizedBox(
+                  width: hasMedium() == true ? 20 : 35,
+                ),
+                Visibility(
+                  visible: hasHigh(),
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.red,
+                    radius: 7,
+                  ),
+                ),
+                SizedBox(
+                  width: hasHigh() == true ? 0 : 15,
                 ),
               ],
             )
