@@ -20,9 +20,6 @@ class _AddEntryPageState extends State<AddEntryPage> {
   String formatted2 = '';
   TextEditingController textController = TextEditingController();
   EntryPriority priority = EntryPriority.low;
-  bool? isCheckedHigh = false;
-  bool? isCheckedMedium = false;
-  bool? isCheckedLow = true;
   @override
   void initState() {
     super.initState();

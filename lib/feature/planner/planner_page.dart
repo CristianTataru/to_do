@@ -36,10 +36,15 @@ class _PlannerPageState extends State<PlannerPage> {
             height: 50,
             child: Row(
               children: [
-                const Text(
-                  "Filter by priority:",
-                  style: TextStyle(
-                    fontSize: 20,
+                Container(
+                  color: Colors.orange[100],
+                  height: 45,
+                  alignment: Alignment.center,
+                  child: const Text(
+                    "Filter by priority:",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
                   ),
                 ),
                 Expanded(
