@@ -148,6 +148,15 @@ class DatabaseRepository {
     return myList;
   }
 
+  List<Note> getFilteredNotes(String search) {
+    return databaseRepository
+        .getNotes()
+        .where((element) =>
+            element.content.toLowerCase().contains(search.toLowerCase()) ||
+            element.title.toLowerCase().contains(search.toLowerCase()))
+        .toList();
+  }
+
   List<Entry> getEntryList(DateTime? key) {
     final stringKey = key == null ? "null" : key.toIso8601String();
     if (!_database.toDos.containsKey(stringKey)) {

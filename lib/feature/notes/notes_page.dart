@@ -13,14 +13,66 @@ class NotesPage extends StatefulWidget {
 }
 
 class _NotesPageState extends State<NotesPage> {
+  TextEditingController textController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    textController.addListener(
+      () {
+        setState(() {});
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Center(
         child: Column(
           children: [
-            const SizedBox(
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(
+                  color: Colors.orange,
+                  width: 3,
+                ),
+              ),
               height: 50,
+              child: TextField(
+                style: const TextStyle(
+                  fontSize: 30,
+                ),
+                cursorColor: Colors.black,
+                controller: textController,
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    onPressed: textController.clear,
+                    icon: const Icon(
+                      Icons.clear,
+                      color: Colors.black,
+                    ),
+                  ),
+                  border: InputBorder.none,
+                  icon: const Icon(
+                    Icons.search,
+                    color: Colors.black,
+                  ),
+                  hintText: "Search",
+                  hintStyle: const TextStyle(
+                    fontSize: 25,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
             ),
             Text(
               "My Notes",
@@ -39,7 +91,7 @@ class _NotesPageState extends State<NotesPage> {
                 physics: const BouncingScrollPhysics(),
                 child: Column(
                   children: [
-                    ...databaseRepository.getNotes().map(
+                    ...databaseRepository.getFilteredNotes(textController.text).map(
                           (e) => NoteWidget(() {
                             setState(() {});
                           }, e),
@@ -115,6 +167,7 @@ class _NoteWidgetState extends State<NoteWidget> {
             top: BorderSide(color: Colors.orange[100]!),
           ),
         ),
+        height: 91,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
