@@ -6,9 +6,10 @@ import 'package:to_do_list/model/entry.dart';
 import 'package:to_do_list/model/priority.dart';
 
 class DatePage extends StatefulWidget {
+  final EntryPriority? dayPriority;
   final void Function() homeCallback;
   final DateTime? entryKey;
-  const DatePage(this.homeCallback, this.entryKey, {super.key});
+  const DatePage(this.dayPriority, this.homeCallback, this.entryKey, {super.key});
 
   @override
   State<DatePage> createState() => _DatePageState();
@@ -19,7 +20,17 @@ class _DatePageState extends State<DatePage> {
 
   @override
   Widget build(BuildContext context) {
-    final todayEntries = databaseRepository.getEntryList(widget.entryKey);
+    final listEntries = databaseRepository.getEntryList(widget.entryKey);
+    List<Entry> todayEntries = [];
+    if (widget.dayPriority == null) {
+      todayEntries = [...listEntries];
+    } else {
+      for (int i = 0; i < listEntries.length; i++) {
+        if (listEntries[i].priority == widget.dayPriority) {
+          todayEntries.add(listEntries[i]);
+        }
+      }
+    }
     final pageTitle = widget.entryKey == null ? "Others" : dateFormatter.format(widget.entryKey!);
     return Scaffold(
       backgroundColor: Colors.black,

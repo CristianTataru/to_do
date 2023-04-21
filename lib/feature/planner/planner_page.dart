@@ -14,6 +14,33 @@ class PlannerPage extends StatefulWidget {
 }
 
 class _PlannerPageState extends State<PlannerPage> {
+  bool? isCheckedHigh = false;
+  bool? isCheckedMedium = false;
+  bool? isCheckedLow = false;
+  bool? isCheckedAll = true;
+  EntryPriority? selectedPriority;
+
+  List<List<Entry>> getList() {
+    List<List<Entry>> myList = databaseRepository.getEntries();
+    List<List<Entry>> newList = [];
+    if (selectedPriority == null) {
+      newList = [...myList];
+    } else {
+      for (int i = 0; i < myList.length; i++) {
+        List<Entry> listToAdd = [];
+        for (int j = 0; j < myList[i].length; j++) {
+          if (myList[i][j].priority == selectedPriority) {
+            listToAdd.add(myList[i][j]);
+          }
+        }
+        if (listToAdd.isNotEmpty) {
+          newList.add(listToAdd);
+        }
+      }
+    }
+    return newList;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -21,7 +48,7 @@ class _PlannerPageState extends State<PlannerPage> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Colors.orange[100],
+              color: Colors.white,
               border: Border.all(
                 color: Colors.orange,
                 width: 3,
@@ -29,13 +56,134 @@ class _PlannerPageState extends State<PlannerPage> {
             ),
             height: 50,
             child: Row(
-              children: const [
-                Text(
+              children: [
+                const Text(
                   "Filter by priority:",
                   style: TextStyle(
                     fontSize: 20,
                   ),
                 ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        Checkbox(
+                          value: isCheckedAll,
+                          fillColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              return Colors.black;
+                            },
+                          ),
+                          onChanged: isCheckedAll == true
+                              ? null
+                              : (value) {
+                                  setState(
+                                    () {
+                                      selectedPriority = null;
+                                      isCheckedAll = value;
+                                      isCheckedMedium = false;
+                                      isCheckedLow = false;
+                                      isCheckedHigh = false;
+                                    },
+                                  );
+                                },
+                        ),
+                        const Text(
+                          "All",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Checkbox(
+                          value: isCheckedLow,
+                          fillColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              return Colors.green;
+                            },
+                          ),
+                          onChanged: isCheckedLow == true
+                              ? null
+                              : (value) {
+                                  setState(
+                                    () {
+                                      selectedPriority = EntryPriority.low;
+                                      isCheckedLow = value;
+                                      isCheckedMedium = false;
+                                      isCheckedHigh = false;
+                                      isCheckedAll = false;
+                                    },
+                                  );
+                                },
+                        ),
+                        const Text(
+                          "Low",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.green,
+                          ),
+                        ),
+                        Checkbox(
+                          value: isCheckedMedium,
+                          fillColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              return Colors.yellow[600]!;
+                            },
+                          ),
+                          onChanged: isCheckedMedium == true
+                              ? null
+                              : (value) {
+                                  setState(
+                                    () {
+                                      selectedPriority = EntryPriority.medium;
+                                      isCheckedMedium = value;
+                                      isCheckedHigh = false;
+                                      isCheckedLow = false;
+                                      isCheckedAll = false;
+                                    },
+                                  );
+                                },
+                        ),
+                        Text(
+                          "Medium",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.yellow[600],
+                          ),
+                        ),
+                        Checkbox(
+                          value: isCheckedHigh,
+                          fillColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              return Colors.red;
+                            },
+                          ),
+                          onChanged: isCheckedHigh == true
+                              ? null
+                              : (value) {
+                                  setState(
+                                    () {
+                                      selectedPriority = EntryPriority.high;
+                                      isCheckedHigh = value;
+                                      isCheckedMedium = false;
+                                      isCheckedLow = false;
+                                      isCheckedAll = false;
+                                    },
+                                  );
+                                },
+                        ),
+                        const Text(
+                          "High",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.red,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 15,
+                )
               ],
             ),
           ),
@@ -58,10 +206,9 @@ class _PlannerPageState extends State<PlannerPage> {
               physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
-                  ...databaseRepository
-                      .getEntries()
+                  ...getList()
                       .map(
-                        (e) => EntryWidget(() {
+                        (e) => EntryWidget(selectedPriority, () {
                           setState(() {});
                         }, e),
                       )
@@ -110,9 +257,10 @@ class _PlannerPageState extends State<PlannerPage> {
 }
 
 class EntryWidget extends StatefulWidget {
+  final EntryPriority? dayPriority;
   final void Function() homeCallback;
   final List<Entry> entryList;
-  const EntryWidget(this.homeCallback, this.entryList, {super.key});
+  const EntryWidget(this.dayPriority, this.homeCallback, this.entryList, {super.key});
 
   @override
   State<EntryWidget> createState() => _EntryWidgetState();
@@ -142,6 +290,7 @@ class _EntryWidgetState extends State<EntryWidget> {
           MaterialPageRoute(
             builder: (context) {
               return DatePage(
+                widget.dayPriority,
                 widget.homeCallback,
                 widget.entryList.first.date == null
                     ? null

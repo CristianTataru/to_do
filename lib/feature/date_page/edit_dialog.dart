@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_list/main.dart';
 import 'package:to_do_list/model/entry.dart';
+import 'package:to_do_list/model/priority.dart';
 
 class EditDialog extends StatefulWidget {
   final Entry entry;
@@ -75,6 +76,22 @@ class _EditDialogState extends State<EditDialog> {
 
   @override
   Widget build(BuildContext context) {
+    EntryPriority priority = widget.entry.priority;
+    Color getTextColor() {
+      Color color = Colors.white;
+      if (priority == EntryPriority.low) {
+        color = Colors.green;
+      } else if (priority == EntryPriority.medium) {
+        color = Colors.yellow[700]!;
+      } else if (priority == EntryPriority.high) {
+        color = Colors.red;
+      }
+      return color;
+    }
+
+    bool? isCheckedHigh = widget.entry.priority == EntryPriority.high ? true : false;
+    bool? isCheckedMedium = widget.entry.priority == EntryPriority.medium ? true : false;
+    bool? isCheckedLow = widget.entry.priority == EntryPriority.low ? true : false;
     return AlertDialog(
       backgroundColor: Colors.orange[100],
       title: const Text("Edit"),
@@ -139,6 +156,93 @@ class _EditDialogState extends State<EditDialog> {
               fontSize: 25,
             ),
           ),
+          const SizedBox(
+            height: 20,
+          ),
+          const Text(
+            "Edit Priority:",
+            style: TextStyle(fontSize: 25),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Row(
+            children: [
+              Checkbox(
+                fillColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                    return Colors.red;
+                  },
+                ),
+                value: isCheckedHigh,
+                onChanged: isCheckedHigh == true
+                    ? null
+                    : (value) {
+                        setState(
+                          () {
+                            priority = EntryPriority.high;
+                            isCheckedHigh = value;
+                            isCheckedMedium = false;
+                            isCheckedLow = false;
+                            widget.entry.priority = EntryPriority.high;
+                            databaseRepository.saveAppData();
+                          },
+                        );
+                      },
+              ),
+              Checkbox(
+                fillColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                    return Colors.yellow[700]!;
+                  },
+                ),
+                value: isCheckedMedium,
+                onChanged: isCheckedMedium == true
+                    ? null
+                    : (value) {
+                        setState(
+                          () {
+                            priority = EntryPriority.medium;
+                            isCheckedMedium = value;
+                            isCheckedHigh = false;
+                            isCheckedLow = false;
+                            widget.entry.priority = EntryPriority.medium;
+                            databaseRepository.saveAppData();
+                          },
+                        );
+                      },
+              ),
+              Checkbox(
+                fillColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                    return Colors.green;
+                  },
+                ),
+                value: isCheckedLow,
+                onChanged: isCheckedLow == true
+                    ? null
+                    : (value) {
+                        setState(
+                          () {
+                            priority = EntryPriority.low;
+                            isCheckedLow = value;
+                            isCheckedHigh = false;
+                            isCheckedMedium = false;
+                            widget.entry.priority = EntryPriority.low;
+                            databaseRepository.saveAppData();
+                          },
+                        );
+                      },
+              ),
+              const SizedBox(
+                width: 25,
+              ),
+              Text(
+                priority.toString(),
+                style: TextStyle(color: getTextColor(), fontSize: 25),
+              )
+            ],
+          )
         ],
       ),
       actions: [
