@@ -20,27 +20,6 @@ class _PlannerPageState extends State<PlannerPage> {
   bool? isCheckedAll = true;
   EntryPriority? selectedPriority;
 
-  List<List<Entry>> getList() {
-    List<List<Entry>> myList = databaseRepository.getEntries();
-    List<List<Entry>> newList = [];
-    if (selectedPriority == null) {
-      newList = [...myList];
-    } else {
-      for (int i = 0; i < myList.length; i++) {
-        List<Entry> listToAdd = [];
-        for (int j = 0; j < myList[i].length; j++) {
-          if (myList[i][j].priority == selectedPriority) {
-            listToAdd.add(myList[i][j]);
-          }
-        }
-        if (listToAdd.isNotEmpty) {
-          newList.add(listToAdd);
-        }
-      }
-    }
-    return newList;
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -206,7 +185,8 @@ class _PlannerPageState extends State<PlannerPage> {
               physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
-                  ...getList()
+                  ...databaseRepository
+                      .getFilteredEntries(selectedPriority)
                       .map(
                         (e) => EntryWidget(selectedPriority, () {
                           setState(() {});
