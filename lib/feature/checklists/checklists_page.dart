@@ -269,6 +269,27 @@ class ChecklistWidget extends StatefulWidget {
 }
 
 class _ChecklistWidgetState extends State<ChecklistWidget> {
+  String getText() {
+    List<ChecklistEntry> list = databaseRepository.getChecklistData(widget.checklist);
+    int doneItems = 0;
+    int notDoneItems = 0;
+    for (int i = 0; i < list.length; i++) {
+      if (list[i].checked == true) {
+        doneItems = doneItems + 1;
+      } else {
+        notDoneItems = notDoneItems + 1;
+      }
+    }
+    String subtext = '';
+    if (doneItems == list.length) {
+      subtext = "          All items done";
+    } else {
+      subtext = "Done: $doneItems    Pending: $notDoneItems";
+    }
+    String text = "Items: ${list.length}         $subtext";
+    return text;
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -359,9 +380,7 @@ class _ChecklistWidgetState extends State<ChecklistWidget> {
               ],
             ),
             Text(
-              widget.checklist.content.isNotEmpty
-                  ? databaseRepository.getChecklistData(widget.checklist).first.name
-                  : "No item",
+              widget.checklist.content.isNotEmpty ? getText() : "No item",
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 25,
