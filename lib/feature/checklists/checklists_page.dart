@@ -95,7 +95,6 @@ class _ChecklistsPageState extends State<ChecklistsPage> {
                       isProgressSelected ? "• In progress" : "In progress",
                       style: const TextStyle(
                         fontSize: 25,
-                        color: Colors.red,
                       ),
                     ),
                   ),
@@ -126,7 +125,6 @@ class _ChecklistsPageState extends State<ChecklistsPage> {
                       isDoneSelected ? "• Done" : "Done",
                       style: const TextStyle(
                         fontSize: 25,
-                        color: Colors.green,
                       ),
                     ),
                   ),
