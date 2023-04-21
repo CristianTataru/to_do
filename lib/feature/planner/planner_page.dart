@@ -27,7 +27,7 @@ class _PlannerPageState extends State<PlannerPage> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Colors.white70,
+              color: Colors.white,
               border: Border.all(
                 color: Colors.orange,
                 width: 3,
