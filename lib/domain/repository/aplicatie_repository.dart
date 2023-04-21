@@ -109,6 +109,34 @@ class DatabaseRepository {
     return myList;
   }
 
+  List<Checklist> getFilteredChecklists(String selection) {
+    List<Checklist> myList = databaseRepository.getChecklists();
+    List<Checklist> newList = [];
+    if (selection == "All") {
+      newList = [...myList];
+    } else if (selection == "Progress") {
+      for (int i = 0; i < myList.length; i++) {
+        for (int j = 0; j < myList[i].content.length; j++) {
+          if (myList[i].content[j].checked == false) {
+            newList.add(myList[i]);
+            break;
+          }
+        }
+      }
+    } else if (selection == "Done") {
+      newList = [...myList];
+      for (int i = 0; i < myList.length; i++) {
+        for (int j = 0; j < myList[i].content.length; j++) {
+          if (myList[i].content[j].checked == false) {
+            newList.remove(myList[i]);
+            break;
+          }
+        }
+      }
+    }
+    return newList;
+  }
+
   List<Note> getNotes() {
     List<Note> myList = databaseRepository._database.notes;
     return myList;

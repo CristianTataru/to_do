@@ -26,14 +26,113 @@ class _ChecklistsPageState extends State<ChecklistsPage> {
     super.dispose();
   }
 
+  bool isAllSelected = true;
+  bool isProgressSelected = false;
+  bool isDoneSelected = false;
+  String userSelection = "All";
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Center(
         child: Column(
           children: [
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: isAllSelected
+                      ? null
+                      : () {
+                          setState(() {
+                            isAllSelected = true;
+                            isProgressSelected = false;
+                            isDoneSelected = false;
+                            userSelection = "All";
+                          });
+                        },
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: isAllSelected ? Colors.orange[100] : Colors.white,
+                      border: Border.all(
+                        width: 3,
+                        color: Colors.orange,
+                      ),
+                    ),
+                    height: 50,
+                    width: 128,
+                    child: Text(
+                      isAllSelected ? "• All" : "All",
+                      style: const TextStyle(
+                        fontSize: 25,
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: isProgressSelected
+                      ? null
+                      : () {
+                          setState(() {
+                            isAllSelected = false;
+                            isProgressSelected = true;
+                            isDoneSelected = false;
+                            userSelection = "Progress";
+                          });
+                        },
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: isProgressSelected ? Colors.orange[100] : Colors.white,
+                      border: Border.all(
+                        width: 3,
+                        color: Colors.orange,
+                      ),
+                    ),
+                    height: 50,
+                    width: 128,
+                    child: Text(
+                      isProgressSelected ? "• In progress" : "In progress",
+                      style: const TextStyle(
+                        fontSize: 25,
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: isDoneSelected
+                      ? null
+                      : () {
+                          setState(() {
+                            isAllSelected = false;
+                            isProgressSelected = false;
+                            isDoneSelected = true;
+                            userSelection = 'Done';
+                          });
+                        },
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: isDoneSelected ? Colors.orange[100] : Colors.white,
+                      border: Border.all(
+                        width: 3,
+                        color: Colors.orange,
+                      ),
+                    ),
+                    height: 50,
+                    width: 128,
+                    child: Text(
+                      isDoneSelected ? "• Done" : "Done",
+                      style: const TextStyle(
+                        fontSize: 25,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(
-              height: 50,
+              height: 20,
             ),
             Text(
               "My Checklists",
@@ -52,7 +151,7 @@ class _ChecklistsPageState extends State<ChecklistsPage> {
                     const SizedBox(
                       height: 20,
                     ),
-                    ...databaseRepository.getChecklists().map(
+                    ...databaseRepository.getFilteredChecklists(userSelection).map(
                           (e) => ChecklistWidget(() {
                             setState(() {});
                           }, e),
