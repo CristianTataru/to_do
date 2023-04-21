@@ -269,7 +269,7 @@ class ChecklistWidget extends StatefulWidget {
 }
 
 class _ChecklistWidgetState extends State<ChecklistWidget> {
-  String getText() {
+  List<String> getText() {
     List<ChecklistEntry> list = databaseRepository.getChecklistData(widget.checklist);
     int doneItems = 0;
     int notDoneItems = 0;
@@ -280,13 +280,14 @@ class _ChecklistWidgetState extends State<ChecklistWidget> {
         notDoneItems = notDoneItems + 1;
       }
     }
-    String subtext = '';
+    String subtextDoi = '';
     if (doneItems == list.length) {
-      subtext = "          All items done";
+      subtextDoi = "All items done";
     } else {
-      subtext = "Done: $doneItems    Pending: $notDoneItems";
+      subtextDoi = "Done: $doneItems / Pending: $notDoneItems";
     }
-    String text = "Items: ${list.length}         $subtext";
+    String subtextUnu = "Items: ${list.length}";
+    List<String> text = [subtextUnu, subtextDoi];
     return text;
   }
 
@@ -305,6 +306,7 @@ class _ChecklistWidgetState extends State<ChecklistWidget> {
         setState(() {});
       },
       child: Container(
+        height: 91,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           border: Border(
@@ -316,15 +318,57 @@ class _ChecklistWidgetState extends State<ChecklistWidget> {
           children: [
             Row(
               children: [
-                Text(
-                  widget.checklist.title,
-                  style: TextStyle(
-                    color: Colors.orange[100]!,
-                    fontSize: 35,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.checklist.title,
+                        style: TextStyle(
+                          color: Colors.orange[100]!,
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          if (widget.checklist.content.isEmpty) ...[
+                            const Text(
+                              "No Item",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 25,
+                              ),
+                            )
+                          ] else ...[
+                            Text(
+                              getText()[0],
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 25,
+                              ),
+                              maxLines: 1,
+                            ),
+                            Expanded(
+                              child: Text(
+                                getText()[1],
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 25,
+                                ),
+                                maxLines: 1,
+                                textAlign: TextAlign.end,
+                              ),
+                            )
+                          ],
+                          const SizedBox(
+                            width: 5,
+                          )
+                        ],
+                      )
+                    ],
                   ),
                 ),
-                const Spacer(),
                 SizedBox(
                   height: 35,
                   child: IconButton(
@@ -379,14 +423,6 @@ class _ChecklistWidgetState extends State<ChecklistWidget> {
                 )
               ],
             ),
-            Text(
-              widget.checklist.content.isNotEmpty ? getText() : "No item",
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 25,
-              ),
-              maxLines: 1,
-            )
           ],
         ),
       ),

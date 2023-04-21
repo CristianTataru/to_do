@@ -290,6 +290,7 @@ class _EntryWidgetState extends State<EntryWidget> {
         );
       },
       child: Container(
+        height: 91,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           border: Border(

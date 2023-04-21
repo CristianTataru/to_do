@@ -133,6 +133,12 @@ class DatabaseRepository {
           }
         }
       }
+      List<Checklist> listForUse = [...newList];
+      for (int i = 0; i < listForUse.length; i++) {
+        if (listForUse[i].content.isEmpty) {
+          newList.remove(listForUse[i]);
+        }
+      }
     }
     return newList;
   }
