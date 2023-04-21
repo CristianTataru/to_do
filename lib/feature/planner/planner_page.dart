@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_list/main.dart';
+import 'package:to_do_list/model/priority.dart';
 import '../../model/entry.dart';
 import '../add_entry/add_entry_page.dart';
 import '../date_page/date_page.dart';
@@ -18,8 +19,28 @@ class _PlannerPageState extends State<PlannerPage> {
     return SafeArea(
       child: Column(
         children: [
-          const SizedBox(
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.orange[100],
+              border: Border.all(
+                color: Colors.orange,
+                width: 3,
+              ),
+            ),
             height: 50,
+            child: Row(
+              children: const [
+                Text(
+                  "Filter by priority:",
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
           ),
           Text(
             "My Planner",
@@ -100,6 +121,18 @@ class EntryWidget extends StatefulWidget {
 class _EntryWidgetState extends State<EntryWidget> {
   static final DateFormat timeFormatter = DateFormat('HH:mm');
   static final DateFormat dateFormatter = DateFormat('dd MMMM yyyy');
+
+  bool hasPriority(EntryPriority priority) {
+    bool x = false;
+    for (int i = 0; i < widget.entryList.length; i++) {
+      if (widget.entryList[i].priority == priority) {
+        x = true;
+        break;
+      }
+    }
+    return x;
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -170,6 +203,37 @@ class _EntryWidgetState extends State<EntryWidget> {
                 Text(
                   widget.entryList[0].name,
                   style: const TextStyle(color: Colors.white, fontSize: 25),
+                ),
+                const Spacer(),
+                Visibility(
+                  visible: hasPriority(EntryPriority.low),
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.green,
+                    radius: 7,
+                  ),
+                ),
+                SizedBox(
+                  width: hasPriority(EntryPriority.low) == true ? 20 : 40,
+                ),
+                Visibility(
+                  visible: hasPriority(EntryPriority.medium),
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.yellow,
+                    radius: 7,
+                  ),
+                ),
+                SizedBox(
+                  width: hasPriority(EntryPriority.medium) == true ? 20 : 35,
+                ),
+                Visibility(
+                  visible: hasPriority(EntryPriority.high),
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.red,
+                    radius: 7,
+                  ),
+                ),
+                SizedBox(
+                  width: hasPriority(EntryPriority.high) == true ? 0 : 15,
                 ),
               ],
             )

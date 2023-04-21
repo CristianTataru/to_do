@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_list/main.dart';
 import 'package:to_do_list/model/entry.dart';
+import 'package:to_do_list/model/priority.dart';
 
 class AddEntryPage extends StatefulWidget {
   const AddEntryPage({super.key});
@@ -18,6 +19,10 @@ class _AddEntryPageState extends State<AddEntryPage> {
   String formatted = "";
   String formatted2 = '';
   TextEditingController textController = TextEditingController();
+  EntryPriority priority = EntryPriority.low;
+  bool? isCheckedHigh = false;
+  bool? isCheckedMedium = false;
+  bool? isCheckedLow = true;
   @override
   void initState() {
     super.initState();
@@ -63,6 +68,18 @@ class _AddEntryPageState extends State<AddEntryPage> {
     );
   }
 
+  Color getTextColor() {
+    Color color = Colors.white;
+    if (priority == EntryPriority.low) {
+      color = Colors.green;
+    } else if (priority == EntryPriority.medium) {
+      color = Colors.yellow;
+    } else if (priority == EntryPriority.high) {
+      color = Colors.red;
+    }
+    return color;
+  }
+
   void selectDate() async {
     dataAleasa = await showDatePicker(
       context: context,
@@ -103,7 +120,10 @@ class _AddEntryPageState extends State<AddEntryPage> {
                 children: [
                   Text(
                     "Select Date:",
-                    style: TextStyle(color: Colors.orange[100], fontSize: 30),
+                    style: TextStyle(
+                      color: Colors.orange[100],
+                      fontSize: 30,
+                    ),
                   ),
                   const SizedBox(
                     width: 30,
@@ -147,7 +167,10 @@ class _AddEntryPageState extends State<AddEntryPage> {
                 children: [
                   Text(
                     "Day:",
-                    style: TextStyle(color: Colors.orange[100], fontSize: 30),
+                    style: TextStyle(
+                      color: Colors.orange[100],
+                      fontSize: 30,
+                    ),
                   ),
                   const SizedBox(
                     width: 150,
@@ -165,7 +188,10 @@ class _AddEntryPageState extends State<AddEntryPage> {
                 children: [
                   Text(
                     "Select Hour:",
-                    style: TextStyle(color: Colors.orange[100], fontSize: 30),
+                    style: TextStyle(
+                      color: Colors.orange[100],
+                      fontSize: 30,
+                    ),
                   ),
                   const SizedBox(
                     width: 30,
@@ -187,6 +213,90 @@ class _AddEntryPageState extends State<AddEntryPage> {
                       ),
                     ),
                   ),
+                ],
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Row(
+                children: [
+                  Text(
+                    "Priority:",
+                    style: TextStyle(
+                      color: Colors.orange[100],
+                      fontSize: 30,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  Checkbox(
+                    fillColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                        return Colors.red;
+                      },
+                    ),
+                    value: isCheckedHigh,
+                    onChanged: isCheckedHigh == true
+                        ? null
+                        : (value) {
+                            setState(
+                              () {
+                                priority = EntryPriority.high;
+                                isCheckedHigh = value;
+                                isCheckedMedium = false;
+                                isCheckedLow = false;
+                              },
+                            );
+                          },
+                  ),
+                  Checkbox(
+                    fillColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                        return Colors.yellow;
+                      },
+                    ),
+                    value: isCheckedMedium,
+                    onChanged: isCheckedMedium == true
+                        ? null
+                        : (value) {
+                            setState(
+                              () {
+                                priority = EntryPriority.medium;
+                                isCheckedMedium = value;
+                                isCheckedHigh = false;
+                                isCheckedLow = false;
+                              },
+                            );
+                          },
+                  ),
+                  Checkbox(
+                    fillColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                        return Colors.green;
+                      },
+                    ),
+                    value: isCheckedLow,
+                    onChanged: isCheckedLow == true
+                        ? null
+                        : (value) {
+                            setState(
+                              () {
+                                priority = EntryPriority.low;
+                                isCheckedLow = value;
+                                isCheckedHigh = false;
+                                isCheckedMedium = false;
+                              },
+                            );
+                          },
+                  ),
+                  const SizedBox(
+                    width: 25,
+                  ),
+                  Text(
+                    priority.toString(),
+                    style: TextStyle(color: getTextColor(), fontSize: 25),
+                  )
                 ],
               ),
               const SizedBox(
@@ -226,7 +336,7 @@ class _AddEntryPageState extends State<AddEntryPage> {
                     ? null
                     : () {
                         databaseRepository.addEntry(
-                          Entry(textController.text, dataAleasa, oraAleasa != null, false),
+                          Entry(textController.text, dataAleasa, oraAleasa != null, false, priority),
                         );
                         Navigator.of(context).pop();
                       },
