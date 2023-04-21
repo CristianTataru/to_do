@@ -20,9 +20,6 @@ class _AddEntryPageState extends State<AddEntryPage> {
   String formatted2 = '';
   TextEditingController textController = TextEditingController();
   EntryPriority priority = EntryPriority.low;
-  bool? isCheckedHigh = false;
-  bool? isCheckedMedium = false;
-  bool? isCheckedLow = true;
   @override
   void initState() {
     super.initState();
@@ -236,16 +233,13 @@ class _AddEntryPageState extends State<AddEntryPage> {
                         return Colors.red;
                       },
                     ),
-                    value: isCheckedHigh,
-                    onChanged: isCheckedHigh == true
+                    value: priority == EntryPriority.high,
+                    onChanged: priority == EntryPriority.high
                         ? null
                         : (value) {
                             setState(
                               () {
                                 priority = EntryPriority.high;
-                                isCheckedHigh = value;
-                                isCheckedMedium = false;
-                                isCheckedLow = false;
                               },
                             );
                           },
@@ -256,16 +250,13 @@ class _AddEntryPageState extends State<AddEntryPage> {
                         return Colors.yellow;
                       },
                     ),
-                    value: isCheckedMedium,
-                    onChanged: isCheckedMedium == true
+                    value: priority == EntryPriority.medium,
+                    onChanged: priority == EntryPriority.medium
                         ? null
                         : (value) {
                             setState(
                               () {
                                 priority = EntryPriority.medium;
-                                isCheckedMedium = value;
-                                isCheckedHigh = false;
-                                isCheckedLow = false;
                               },
                             );
                           },
@@ -276,16 +267,13 @@ class _AddEntryPageState extends State<AddEntryPage> {
                         return Colors.green;
                       },
                     ),
-                    value: isCheckedLow,
-                    onChanged: isCheckedLow == true
+                    value: priority == EntryPriority.low,
+                    onChanged: priority == EntryPriority.low
                         ? null
                         : (value) {
                             setState(
                               () {
                                 priority = EntryPriority.low;
-                                isCheckedLow = value;
-                                isCheckedHigh = false;
-                                isCheckedMedium = false;
                               },
                             );
                           },

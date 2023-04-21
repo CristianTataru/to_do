@@ -14,6 +14,12 @@ class PlannerPage extends StatefulWidget {
 }
 
 class _PlannerPageState extends State<PlannerPage> {
+  bool? isCheckedHigh = false;
+  bool? isCheckedMedium = false;
+  bool? isCheckedLow = false;
+  bool? isCheckedAll = true;
+  EntryPriority? selectedPriority;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -21,7 +27,7 @@ class _PlannerPageState extends State<PlannerPage> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Colors.orange[100],
+              color: Colors.white,
               border: Border.all(
                 color: Colors.orange,
                 width: 3,
@@ -29,13 +35,139 @@ class _PlannerPageState extends State<PlannerPage> {
             ),
             height: 50,
             child: Row(
-              children: const [
-                Text(
-                  "Filter by priority:",
-                  style: TextStyle(
-                    fontSize: 20,
+              children: [
+                Container(
+                  color: Colors.orange[100],
+                  height: 45,
+                  alignment: Alignment.center,
+                  child: const Text(
+                    "Filter by priority:",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
                   ),
                 ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        Checkbox(
+                          value: isCheckedAll,
+                          fillColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              return Colors.black;
+                            },
+                          ),
+                          onChanged: isCheckedAll == true
+                              ? null
+                              : (value) {
+                                  setState(
+                                    () {
+                                      selectedPriority = null;
+                                      isCheckedAll = value;
+                                      isCheckedMedium = false;
+                                      isCheckedLow = false;
+                                      isCheckedHigh = false;
+                                    },
+                                  );
+                                },
+                        ),
+                        const Text(
+                          "All",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Checkbox(
+                          value: isCheckedLow,
+                          fillColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              return Colors.green;
+                            },
+                          ),
+                          onChanged: isCheckedLow == true
+                              ? null
+                              : (value) {
+                                  setState(
+                                    () {
+                                      selectedPriority = EntryPriority.low;
+                                      isCheckedLow = value;
+                                      isCheckedMedium = false;
+                                      isCheckedHigh = false;
+                                      isCheckedAll = false;
+                                    },
+                                  );
+                                },
+                        ),
+                        const Text(
+                          "Low",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.green,
+                          ),
+                        ),
+                        Checkbox(
+                          value: isCheckedMedium,
+                          fillColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              return Colors.yellow[600]!;
+                            },
+                          ),
+                          onChanged: isCheckedMedium == true
+                              ? null
+                              : (value) {
+                                  setState(
+                                    () {
+                                      selectedPriority = EntryPriority.medium;
+                                      isCheckedMedium = value;
+                                      isCheckedHigh = false;
+                                      isCheckedLow = false;
+                                      isCheckedAll = false;
+                                    },
+                                  );
+                                },
+                        ),
+                        Text(
+                          "Medium",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.yellow[600],
+                          ),
+                        ),
+                        Checkbox(
+                          value: isCheckedHigh,
+                          fillColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              return Colors.red;
+                            },
+                          ),
+                          onChanged: isCheckedHigh == true
+                              ? null
+                              : (value) {
+                                  setState(
+                                    () {
+                                      selectedPriority = EntryPriority.high;
+                                      isCheckedHigh = value;
+                                      isCheckedMedium = false;
+                                      isCheckedLow = false;
+                                      isCheckedAll = false;
+                                    },
+                                  );
+                                },
+                        ),
+                        const Text(
+                          "High",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.red,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 15,
+                )
               ],
             ),
           ),
@@ -59,9 +191,9 @@ class _PlannerPageState extends State<PlannerPage> {
               child: Column(
                 children: [
                   ...databaseRepository
-                      .getEntries()
+                      .getFilteredEntries(selectedPriority)
                       .map(
-                        (e) => EntryWidget(() {
+                        (e) => EntryWidget(selectedPriority, () {
                           setState(() {});
                         }, e),
                       )
@@ -110,9 +242,10 @@ class _PlannerPageState extends State<PlannerPage> {
 }
 
 class EntryWidget extends StatefulWidget {
+  final EntryPriority? dayPriority;
   final void Function() homeCallback;
   final List<Entry> entryList;
-  const EntryWidget(this.homeCallback, this.entryList, {super.key});
+  const EntryWidget(this.dayPriority, this.homeCallback, this.entryList, {super.key});
 
   @override
   State<EntryWidget> createState() => _EntryWidgetState();
@@ -142,6 +275,7 @@ class _EntryWidgetState extends State<EntryWidget> {
           MaterialPageRoute(
             builder: (context) {
               return DatePage(
+                widget.dayPriority,
                 widget.homeCallback,
                 widget.entryList.first.date == null
                     ? null

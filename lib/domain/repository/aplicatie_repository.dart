@@ -4,6 +4,7 @@ import 'package:to_do_list/main.dart';
 import 'package:to_do_list/model/checklist.dart';
 import 'package:to_do_list/model/entry.dart';
 import 'package:to_do_list/model/note.dart';
+import 'package:to_do_list/model/priority.dart';
 import '../../database/database.dart';
 
 class DatabaseRepository {
@@ -16,6 +17,27 @@ class DatabaseRepository {
       return;
     }
     _database = Database.fromJson(jsonDecode(appDataJson));
+  }
+
+  List<List<Entry>> getFilteredEntries(EntryPriority? selectedPriority) {
+    List<List<Entry>> myList = databaseRepository.getEntries();
+    List<List<Entry>> newList = [];
+    if (selectedPriority == null) {
+      newList = [...myList];
+    } else {
+      for (int i = 0; i < myList.length; i++) {
+        List<Entry> listToAdd = [];
+        for (int j = 0; j < myList[i].length; j++) {
+          if (myList[i][j].priority == selectedPriority) {
+            listToAdd.add(myList[i][j]);
+          }
+        }
+        if (listToAdd.isNotEmpty) {
+          newList.add(listToAdd);
+        }
+      }
+    }
+    return newList;
   }
 
   void saveAppData() async {
