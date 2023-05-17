@@ -1,8 +1,10 @@
-class Checklist {
-  String title;
-  List<ChecklistEntry> content;
+import 'package:equatable/equatable.dart';
 
-  Checklist(this.title, this.content);
+class Checklist extends Equatable {
+  final String title;
+  final List<ChecklistEntry> content;
+
+  const Checklist(this.title, this.content);
 
   Checklist.fromJson(Map<String, dynamic> json)
       : title = json['title'],
@@ -12,13 +14,26 @@ class Checklist {
         'title': title,
         'content': content,
       };
+
+  Checklist copyWith({
+    String? title,
+    List<ChecklistEntry>? content,
+  }) {
+    return Checklist(
+      title ?? this.title,
+      content ?? List.from(this.content),
+    );
+  }
+
+  @override
+  List<Object> get props => [title, content];
 }
 
-class ChecklistEntry {
-  String name;
-  bool checked;
+class ChecklistEntry extends Equatable {
+  final String name;
+  final bool checked;
 
-  ChecklistEntry(this.name, this.checked);
+  const ChecklistEntry(this.name, this.checked);
 
   ChecklistEntry.fromJson(Map<String, dynamic> json)
       : name = json['name'],
@@ -28,4 +43,17 @@ class ChecklistEntry {
         'name': name,
         'checked': checked,
       };
+
+  ChecklistEntry copyWith({
+    String? name,
+    bool? checked,
+  }) {
+    return ChecklistEntry(
+      name ?? this.name,
+      checked ?? this.checked,
+    );
+  }
+
+  @override
+  List<Object> get props => [name, checked];
 }

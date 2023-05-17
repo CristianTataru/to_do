@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:to_do_list/database/database.dart';
 import 'package:to_do_list/main.dart';
 import 'package:to_do_list/model/checklist.dart';
 import 'package:to_do_list/model/entry.dart';
 import 'package:to_do_list/model/note.dart';
 import 'package:to_do_list/model/priority.dart';
-import '../../database/database.dart';
 
 class DatabaseRepository {
   Database _database = Database({}, [], []);
@@ -40,6 +40,16 @@ class DatabaseRepository {
     return newList;
   }
 
+  List<Entry> getEntryList(DateTime? key) {
+    final stringKey = key == null ? "null" : key.toIso8601String();
+    if (!_database.toDos.containsKey(stringKey)) {
+      return [];
+    }
+    List<Entry> listReturned = _database.toDos[stringKey]!;
+    listReturned.sort(compareTwoEntries);
+    return listReturned;
+  }
+
   void saveAppData() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('myApp', jsonEncode(_database));
@@ -64,6 +74,16 @@ class DatabaseRepository {
 
   void deleteNote(Note note) {
     _database.notes.remove(note);
+    saveAppData();
+  }
+
+  void editNote(Note oldNote, Note newNote) {
+    final index = _database.notes.indexOf(oldNote);
+    if (index == -1) {
+      return;
+    }
+    _database.notes.insert(index, newNote);
+    _database.notes.remove(oldNote);
     saveAppData();
   }
 
@@ -93,27 +113,27 @@ class DatabaseRepository {
     saveAppData();
   }
 
-  List<ChecklistEntry> getChecklistData(Checklist a) {
-    List<ChecklistEntry> myList = a.content;
-    myList.sort((a, b) {
-      if (a.checked == b.checked) {
-        return a.name.compareTo(b.name);
-      }
-      return b.checked ? -1 : 1;
-    });
-    return myList;
+  void removeChecklistItemAtIndex(int index, ChecklistEntry entry) {
+    if (_database.checklists.length <= index) {
+      return;
+    }
+    _database.checklists[index].content.remove(entry);
+    saveAppData();
   }
 
-  List<Checklist> getChecklists() {
-    List<Checklist> myList = databaseRepository._database.checklists;
-    return myList;
+  void addChecklistItemAtIndex(int index, ChecklistEntry entry) {
+    if (_database.checklists.length <= index) {
+      return;
+    }
+    _database.checklists[index].content.add(entry);
+    saveAppData();
   }
 
   List<Checklist> getFilteredChecklists(String selection) {
-    List<Checklist> myList = databaseRepository.getChecklists();
+    List<Checklist> myList = databaseRepository._database.checklists.map((e) => e.copyWith()).toList();
     List<Checklist> newList = [];
     if (selection == "All") {
-      newList = [...myList];
+      newList = myList;
     } else if (selection == "Progress") {
       for (int i = 0; i < myList.length; i++) {
         for (int j = 0; j < myList[i].content.length; j++) {
@@ -144,8 +164,7 @@ class DatabaseRepository {
   }
 
   List<Note> getNotes() {
-    List<Note> myList = databaseRepository._database.notes;
-    return myList;
+    return List.from(databaseRepository._database.notes);
   }
 
   List<Note> getFilteredNotes(String search) {
@@ -157,21 +176,6 @@ class DatabaseRepository {
         .toList();
   }
 
-  List<Entry> getEntryList(DateTime? key) {
-    final stringKey = key == null ? "null" : key.toIso8601String();
-    if (!_database.toDos.containsKey(stringKey)) {
-      return [];
-    }
-    List<Entry> listReturned = _database.toDos[stringKey]!;
-    listReturned.sort(compareTwoEntries);
-    return listReturned;
-  }
-
-  //Sorteaza 2 entry in ordinea prioritatii:
-  //1.Pune taskurile "Not Done" inainte celor "Done".
-  //2.Pune taskurile cu ora inaintea celor fara ora.
-  //3.Pune taskurile cu ora mai devreme inaintea celor cu ora mai tarzie.
-  //4.Sorteaza taskurile in ordine alfabetica.
   int compareTwoEntries(Entry a, Entry b) {
     if (a.isDone == b.isDone) {
       if (a.hasTime == b.hasTime) {
@@ -207,6 +211,6 @@ class DatabaseRepository {
     for (int i = 0; i < myList.length; i++) {
       myList[i].sort(compareTwoEntries);
     }
-    return myList;
+    return myList.map((list) => List<Entry>.from(list)).toList();
   }
 }

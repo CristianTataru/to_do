@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:to_do_list/feature/checklists/checklists_page.dart';
-import 'package:to_do_list/feature/notes/notes_page.dart';
-import 'package:to_do_list/feature/planner/planner_page.dart';
+import 'package:to_do_list/feature/checklists/checklists/checklists_page.dart';
+import 'package:to_do_list/feature/notes/notes/notes_page.dart';
+import 'package:to_do_list/feature/to_do_list/to_do_list_all/to_do_list_all_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,8 +14,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int currentIndex = 0;
   PageController pageController = PageController(initialPage: 0);
-  List<String> appBar = ["Planner", "Checklist", "Notes"];
-  final screens = [const PlannerPage(), const ChecklistsPage(), const NotesPage()];
+  List<String> appBar = ["To Do List", "Checklist", "Notes"];
+  final screens = [const ToDoListAllPage(), const ChecklistsPage(), const NotesPage()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage> {
             tabs: const [
               GButton(
                 icon: Icons.calendar_month_outlined,
-                text: "Planner",
+                text: "To Do",
               ),
               GButton(
                 icon: Icons.checklist_rounded,

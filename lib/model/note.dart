@@ -1,8 +1,10 @@
-class Note {
-  String title;
-  String content;
+import 'package:equatable/equatable.dart';
 
-  Note(this.title, this.content);
+class Note extends Equatable {
+  final String title;
+  final String content;
+
+  const Note(this.title, this.content);
 
   Note.fromJson(Map<String, dynamic> json)
       : title = json['title'],
@@ -12,4 +14,7 @@ class Note {
         'title': title,
         'content': content,
       };
+
+  @override
+  List<Object?> get props => [title, content];
 }

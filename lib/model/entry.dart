@@ -1,13 +1,14 @@
+import 'package:equatable/equatable.dart';
 import 'package:to_do_list/model/priority.dart';
 
-class Entry {
-  String name;
-  DateTime? date;
-  bool hasTime;
-  bool isDone;
-  EntryPriority priority;
+class Entry extends Equatable {
+  final String name;
+  final DateTime? date;
+  final bool hasTime;
+  final bool isDone;
+  final EntryPriority priority;
 
-  Entry(this.name, this.date, this.hasTime, this.isDone, this.priority);
+  const Entry(this.name, this.date, this.hasTime, this.isDone, this.priority);
 
   Entry.fromJson(Map<String, dynamic> json)
       : name = json['name'],
@@ -23,4 +24,23 @@ class Entry {
         'isDone': isDone,
         'priority': priority.toJson(),
       };
+
+  Entry copyWith({
+    String? name,
+    DateTime? date,
+    bool? hasTime,
+    bool? isDone,
+    EntryPriority? priority,
+  }) {
+    return Entry(
+      name ?? this.name,
+      date ?? this.date,
+      hasTime ?? this.hasTime,
+      isDone ?? this.isDone,
+      priority ?? this.priority,
+    );
+  }
+
+  @override
+  List<Object?> get props => [name, date, hasTime, isDone, priority];
 }
